@@ -20,14 +20,14 @@ int main(int argc, char* argv[]) {
   }
 
   set_base_hints();
-  std::cout << "base hints setted\n" << std::endl;
+  std::cout << "base hints setted" << std::endl;
   Eng::Window window = Eng::Window(WINDOW_WIDTH, WINDOW_HEIGHT, "MiniGL Engine");
   if(!window.created()) {
     glfwTerminate();
     return EXIT_FAILURE;
   }
 
-  std::cout << "application window created\n" << std::endl;
+  std::cout << "application window created" << std::endl;
 
   glfwMakeContextCurrent(window.unwrap());
 
