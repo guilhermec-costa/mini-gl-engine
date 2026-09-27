@@ -1,16 +1,20 @@
 #pragma once
 
 #include "window.hpp"
+
 namespace Eng {
 class Controller {
 public:
-  Controller(const Controller&) = delete;
-  Controller& operator=(const Controller&) = delete;
-  Controller(Window* window);
+  Controller(const Controller &) = delete;
+  Controller &operator=(const Controller &) = delete;
+  Controller(Window *window);
   void loop();
 
 private:
   bool should_stop() const;
-  Window* _window;
+  void process_events();
+  void render();
+  bool quit_app = false;
+  Window *_window;
 };
-}
+} // namespace Eng
