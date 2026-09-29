@@ -7,7 +7,7 @@ namespace Eng {
 
 Mesh::Mesh(const std::vector<float> &raw_data,
            const std::vector<VertexAttribute> &attributes, size_t _vertex_count,
-           size_t stride) {
+           size_t stride, Material* _material) {
   uint VBO, VAO;
   glGenBuffers(1, &VBO);
   glGenVertexArrays(1, &VAO);
@@ -29,7 +29,12 @@ Mesh::Mesh(const std::vector<float> &raw_data,
   glBindVertexArray(0);
 
   vertex_count = _vertex_count;
+  material = _material;
 };
+
+void Mesh::set_material(Material* m) {
+  material = m;
+}
 
 Mesh::Mesh(Mesh &&other) noexcept
     : _VAO(other._VAO), _VBO(other._VBO), vertex_count(other.vertex_count) {
@@ -57,6 +62,9 @@ Mesh::~Mesh() {
 }
 
 void Mesh::draw() const {
+  if(material)
+    material->bind();
+
   glBindVertexArray(_VAO);
   glDrawArrays(GL_TRIANGLES, 0, vertex_count);
 
