@@ -54,8 +54,6 @@ std::expected<Shader, const char *> Shader::create(const char *vertex_path,
   const char *vertex_code = vertexsrc.c_str();
   const char *frag_code = fragsrc.c_str();
 
-  std::cout << vertex_code << std::endl;
-
   unsigned int vertex_shader, fragment_shader;
   vertex_shader = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vertex_shader, 1, &vertex_code, NULL);
@@ -121,5 +119,10 @@ bool Shader::check_program_link_status(unsigned int program_id) {
 }
 
 void Shader::bind() const { glUseProgram(_program_id); }
+
+void Shader::set_uniformi(const char* name, int value) const {
+  int loc = glGetUniformLocation(_program_id, name);
+  glUniform1i(loc, value);
+}
 
 } // namespace Eng
