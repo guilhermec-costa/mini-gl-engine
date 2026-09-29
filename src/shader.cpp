@@ -6,6 +6,11 @@
 #include <sstream>
 #include <string>
 
+const auto SHADER_DIR = std::filesystem::path(PROJECT_ROOT) / "shaders";
+std::filesystem::path shaderpath(const char* path) {
+  return (SHADER_DIR / path);
+}
+
 namespace Eng {
 
 Shader::Shader(unsigned int id) : _program_id(id) {};

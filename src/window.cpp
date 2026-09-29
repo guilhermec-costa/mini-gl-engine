@@ -19,4 +19,8 @@ Window::Window(uint16_t w, uint16_t h, const char *title)
   }
 }
 
+void Window::clear(const EngTypes::Color color) const {
+  glClearColor(color.r, color.g, color.b, color.a);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
 } // namespace Eng

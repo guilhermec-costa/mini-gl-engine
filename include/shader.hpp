@@ -1,5 +1,8 @@
 #pragma once
 #include <expected>
+#include <filesystem>
+
+std::filesystem::path shaderpath(const char* path);
 
 namespace Eng {
 

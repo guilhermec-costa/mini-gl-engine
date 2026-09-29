@@ -1,9 +1,9 @@
 #include "engine.hpp"
 #include "GLFW/glfw3.h"
+#include "material.hpp"
 #include "mesh.hpp"
 #include "primitives.hpp"
 #include "shader.hpp"
-#include <filesystem>
 #include <iostream>
 #include <vector>
 
@@ -23,6 +23,13 @@ void Controller::process_events() {
 void Controller::render() {}
 
 void Controller::loop() {
+  auto shader = Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
+  if(!shader) {
+    std::cout << shader.error() << std::endl;
+    return;
+  }
+  Material material(*shader);
+
   Eng::Mesh m1(
     std::vector{
       0.0f, 0.5f, 0.0f, 
@@ -30,28 +37,16 @@ void Controller::loop() {
       -0.5f, -0.5f, 0.0f
     },
     std::vector{
-      VertexAttribute{0, 3, 0}
+      VertexAttribute(0, 3, 0)
     },
     3,
-    sizeof(float) * 3
+    sizeof(float) * 3,
+    &material
   );
   
-  auto shader_directory = std::filesystem::path(PROJECT_ROOT) / "shaders";
-  auto shader = Shader::create(
-    (shader_directory / "vertex.glsl").c_str(),
-    (shader_directory / "frag.glsl").c_str()
-  );
-
-  if(!shader) {
-    std::cout << shader.error() << std::endl;
-    return;
-  }
-
   while (!should_stop()) {
     process_events();
-    glClearColor(0.5f, 0.3f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    shader->bind();
+    _window->clear({0.0f, 0.0f, 0.0f, 1.0f});
     m1.draw();
     glfwSwapBuffers(_window->unwrap());
     glfwPollEvents();
