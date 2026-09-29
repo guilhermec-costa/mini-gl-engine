@@ -12,11 +12,13 @@ public:
   Mesh(const std::vector<float>& rawData,
        const std::vector<VertexAttribute> &attributes, size_t vertex_count,
        size_t stride);
+  ~Mesh();
 
   Mesh(const Mesh&) = delete;
   Mesh& operator=(const Mesh&) = delete;
+
   Mesh(Mesh&& other) noexcept;
-  ~Mesh();
+  Mesh& operator=(Mesh&& other) noexcept;
 
   void draw() const;
 

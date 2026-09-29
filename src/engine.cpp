@@ -1,8 +1,10 @@
 #include "engine.hpp"
-#include <GL/gl.h>
 #include "GLFW/glfw3.h"
 #include "mesh.hpp"
 #include "primitives.hpp"
+#include "shader.hpp"
+#include <filesystem>
+#include <iostream>
 #include <vector>
 
 namespace Eng {
@@ -33,11 +35,23 @@ void Controller::loop() {
     3,
     sizeof(float) * 3
   );
+  
+  auto shader_directory = std::filesystem::path(PROJECT_ROOT) / "shaders";
+  auto shader = Shader::create(
+    (shader_directory / "vertex.glsl").c_str(),
+    (shader_directory / "frag.glsl").c_str()
+  );
+
+  if(!shader) {
+    std::cout << shader.error() << std::endl;
+    return;
+  }
 
   while (!should_stop()) {
     process_events();
     glClearColor(0.5f, 0.3f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    shader->bind();
     m1.draw();
     glfwSwapBuffers(_window->unwrap());
     glfwPollEvents();

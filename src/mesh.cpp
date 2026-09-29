@@ -37,6 +37,20 @@ Mesh::Mesh(Mesh &&other) noexcept
   other._VBO = 0;
 }
 
+Mesh& Mesh::operator=(Mesh&& other) noexcept {
+  if(this != &other) {
+    glDeleteBuffers(1, &_VBO);
+    glDeleteVertexArrays(1, &_VAO);
+
+    _VAO = other._VAO;
+    _VBO = other._VBO;
+    other._VAO = 0;
+    other._VBO = 0;
+  }
+
+  return *this;
+}
+
 Mesh::~Mesh() {
   glDeleteBuffers(1, &_VBO);
   glDeleteVertexArrays(1, &_VAO);
