@@ -3,18 +3,26 @@
 #include "types.hpp"
 #include <expected>
 #include <filesystem>
+#include <unordered_map>
 #include <variant>
-#include <vector>
 #include <glm/glm.hpp>
 
 std::filesystem::path shaderpath(const char *path);
 
-using UniformValue = std::variant<int, float, EngTypes::Color>;
+using UniformValue = std::variant<
+  int, 
+  float, 
+  glm::mat4,
+  EngTypes::Color>;
 
 struct Uniform {
   std::string name;
   UniformValue value;
 };
+
+const Uniform IDENTITY_MODEL_UNIFORM = Uniform{"model", glm::mat4(1.0f)};
+const Uniform IDENTITY_VIEW_UNIFORM = Uniform("view", glm::mat4(1.0f));
+const Uniform IDENTITY_PROJECTION_UNIF0RM = Uniform("projection", glm::mat4(1.0f));
 
 namespace Eng {
 
@@ -27,10 +35,14 @@ public:
   static std::expected<Shader, const char *> create(const char *vertex_path,
                                                     const char *frag_path);
 
-  void add_uniform(const Uniform u);
+  void add_uniform(std::string name, UniformValue value);
+  void add_uniform(Uniform uniform);
+  void patch_uniform(std::string name, UniformValue new_value);
   void set_uniformi(const char *name, int value) const;
   void set_uniformf(const char *name, float value) const;
-  void set_uniformv4(const char *name, float v1, float v2, float v3, float v4) const;
+  void set_uniformv4f(const char *name, float v1, float v2, float v3, float v4) const;
+  void set_uniformmat4f(const char* name, glm::mat4 mat) const;
+
   virtual void bind() const;
   virtual void apply() const;
   ~Shader();
@@ -45,6 +57,9 @@ protected:
   unsigned int _program_id;
 
 private:
-    std::vector<Uniform> uniforms;
+    int get_uniform_location(const char *name) const;
+
+private:
+    std::unordered_map<std::string, UniformValue> uniforms;
 };
 } // namespace Eng
