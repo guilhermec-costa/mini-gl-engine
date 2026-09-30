@@ -5,6 +5,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <type_traits>
+#include <variant>
 
 const auto SHADER_DIR = std::filesystem::path(PROJECT_ROOT) / "shaders";
 std::filesystem::path shaderpath(const char* path) {
@@ -15,7 +17,8 @@ namespace Eng {
 
 Shader::Shader(unsigned int id) : _program_id(id) {};
 
-Shader::Shader(Shader &&other) noexcept : _program_id(other._program_id) {
+Shader::Shader(Shader &&other) noexcept 
+  : _program_id(other._program_id), uniforms(std::move(other.uniforms)) {
   other._program_id = 0;
 }
 
@@ -24,6 +27,7 @@ Shader &Shader::operator=(Shader &&other) noexcept {
     if (_program_id != 0)
       glDeleteProgram(_program_id);
     _program_id = other._program_id;
+    uniforms = std::move(other.uniforms);
     other._program_id = 0;
   }
 
@@ -120,9 +124,44 @@ bool Shader::check_program_link_status(unsigned int program_id) {
 
 void Shader::bind() const { glUseProgram(_program_id); }
 
+void Shader::apply() const {
+  for(const auto& uniform : uniforms) {
+    std::visit([&](const auto& value) {
+      using T = std::decay_t<decltype(value)>;
+      if constexpr (std::is_same_v<T, int>) {
+        set_uniformi(uniform.name.c_str(), value);
+      } else if constexpr (std::is_same_v<T, float>) {
+        set_uniformf(uniform.name.c_str(), value);
+      } else if constexpr (std::is_same_v<T, EngTypes::Color>) {
+        const EngTypes::Color& color = value;
+        set_uniformv4(
+          uniform.name.c_str(),
+          color.r,
+          color.g,
+          color.b,
+          color.a
+        );
+      }
+    }, uniform.value);
+  }
+}
+
+void Shader::add_uniform(Uniform u) {
+  uniforms.push_back(std::move(u));
+}
+
 void Shader::set_uniformi(const char* name, int value) const {
   int loc = glGetUniformLocation(_program_id, name);
   glUniform1i(loc, value);
 }
 
+void Shader::set_uniformf(const char* name, float value) const {
+  int loc = glGetUniformLocation(_program_id, name);
+  glUniform1f(loc, value);
+}
+
+void Shader::set_uniformv4(const char * name, float v1, float v2, float v3, float v4) const {
+  int loc = glGetUniformLocation(_program_id, name);
+  glUniform4f(loc, v1, v2, v3, v4);
+}
 } // namespace Eng

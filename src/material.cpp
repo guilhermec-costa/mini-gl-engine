@@ -9,7 +9,7 @@ void Material::bind() const {
   }
 
   shader.bind();
-  shader.set_uniformi("albedo", unit);
+  shader.apply();
 }
 
 void Material::set_albedo(Albedo &a) { albedo = &a; }
