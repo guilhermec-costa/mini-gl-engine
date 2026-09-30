@@ -7,6 +7,7 @@
 #include <string>
 #include <type_traits>
 #include <variant>
+#include <glm/gtc/type_ptr.hpp>
 
 const auto SHADER_DIR = std::filesystem::path(PROJECT_ROOT) / "shaders";
 std::filesystem::path shaderpath(const char* path) {
@@ -15,7 +16,11 @@ std::filesystem::path shaderpath(const char* path) {
 
 namespace Eng {
 
-Shader::Shader(unsigned int id) : _program_id(id) {};
+Shader::Shader(unsigned int id) : _program_id(id) {
+  add_uniform(IDENTITY_MODEL_UNIFORM);
+  add_uniform(IDENTITY_VIEW_UNIFORM);
+  add_uniform(IDENTITY_PROJECTION_UNIF0RM);
+};
 
 Shader::Shader(Shader &&other) noexcept 
   : _program_id(other._program_id), uniforms(std::move(other.uniforms)) {
@@ -125,43 +130,59 @@ bool Shader::check_program_link_status(unsigned int program_id) {
 void Shader::bind() const { glUseProgram(_program_id); }
 
 void Shader::apply() const {
-  for(const auto& uniform : uniforms) {
+  for(const auto& [name, value]: uniforms) {
     std::visit([&](const auto& value) {
-      using T = std::decay_t<decltype(value)>;
+      using T = std::remove_cvref_t<decltype(value)>;
       if constexpr (std::is_same_v<T, int>) {
-        set_uniformi(uniform.name.c_str(), value);
+        set_uniformi(name.c_str(), value);
       } else if constexpr (std::is_same_v<T, float>) {
-        set_uniformf(uniform.name.c_str(), value);
+        set_uniformf(name.c_str(), value);
+      } else if constexpr (std::is_same_v<T, glm::mat4>) {
+        const glm::mat4& m = value;
+        set_uniformmat4f(name.c_str(), m);
       } else if constexpr (std::is_same_v<T, EngTypes::Color>) {
         const EngTypes::Color& color = value;
-        set_uniformv4(
-          uniform.name.c_str(),
+        set_uniformv4f(
+          name.c_str(),
           color.r,
           color.g,
           color.b,
           color.a
         );
       }
-    }, uniform.value);
+    }, value);
   }
 }
 
+void Shader::add_uniform(std::string name, UniformValue value) {
+  uniforms.emplace(std::move(name), std::move(value));
+}
+
 void Shader::add_uniform(Uniform u) {
-  uniforms.push_back(std::move(u));
+  uniforms.emplace(std::move(u.name), std::move(u.value));
+}
+
+void Shader::patch_uniform(std::string name, UniformValue new_value) {
+  uniforms.at(name) = new_value;
+}
+
+int Shader::get_uniform_location(const char* name) const {
+  return glGetUniformLocation(_program_id, name);
 }
 
 void Shader::set_uniformi(const char* name, int value) const {
-  int loc = glGetUniformLocation(_program_id, name);
-  glUniform1i(loc, value);
+  glUniform1i(get_uniform_location(name), value);
 }
 
 void Shader::set_uniformf(const char* name, float value) const {
-  int loc = glGetUniformLocation(_program_id, name);
-  glUniform1f(loc, value);
+  glUniform1f(get_uniform_location(name), value);
 }
 
-void Shader::set_uniformv4(const char * name, float v1, float v2, float v3, float v4) const {
-  int loc = glGetUniformLocation(_program_id, name);
-  glUniform4f(loc, v1, v2, v3, v4);
+void Shader::set_uniformv4f(const char * name, float v1, float v2, float v3, float v4) const {
+  glUniform4f(get_uniform_location(name), v1, v2, v3, v4);
+}
+
+void Shader::set_uniformmat4f(const char* name, const glm::mat4 mat) const {
+  glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(mat));
 }
 } // namespace Eng
