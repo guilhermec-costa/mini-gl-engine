@@ -20,6 +20,7 @@ Shader::Shader(unsigned int id) : _program_id(id) {
   add_uniform(IDENTITY_MODEL_UNIFORM);
   add_uniform(IDENTITY_VIEW_UNIFORM);
   add_uniform(IDENTITY_PROJECTION_UNIF0RM);
+  add_uniform("albedo", 0);
 };
 
 Shader::Shader(Shader &&other) noexcept 

@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 #include "mesh.hpp"
 #include "primitives.hpp"
-#include <iostream>
 
 namespace Eng {
 
@@ -32,10 +31,6 @@ Mesh::Mesh(const std::vector<float> &raw_data,
   material = _material;
 };
 
-void Mesh::set_material(Material* m) {
-  material = m;
-}
-
 Mesh::Mesh(Mesh &&other) noexcept
     : _VAO(other._VAO), _VBO(other._VBO), vertex_count(other.vertex_count) {
   other._VAO = 0;
@@ -61,17 +56,20 @@ Mesh::~Mesh() {
   glDeleteVertexArrays(1, &_VAO);
 }
 
-void Mesh::draw() const {
-  if(material)
-    material->bind();
+Material* Mesh::get_material() const {
+  return material;
+}
 
-  glBindVertexArray(_VAO);
-  glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+int Mesh::get_vertex_count() const {
+  return vertex_count;
+}
 
-  unsigned int error = glGetError();
-  if (error) {
-    std::cout << "failed to render, code: " << error << "\n";
-  }
-};
+unsigned int Mesh::get_VAO() const {
+  return _VAO;
+}
+
+void Mesh::set_material(Material* m) {
+  material = m;
+}
 
 } // namespace Eng
