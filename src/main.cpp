@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdint>
 #include "engine.hpp"
+#include "renderer.hpp"
 #include "window.hpp"
 
 void set_base_hints() {
@@ -37,7 +38,8 @@ int main(int argc, char* argv[]) {
   };
 
   glViewport(0, 0, window.width, window.height);
-  Eng::Controller ctrl = Eng::Controller(&window);
+  Eng::Renderer renderer = Eng::Renderer();
+  Eng::Controller ctrl = Eng::Controller(&window, &renderer);
   ctrl.loop();
   return EXIT_SUCCESS;
 }

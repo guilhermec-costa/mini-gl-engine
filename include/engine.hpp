@@ -1,13 +1,15 @@
 #pragma once
 
+#include "renderer.hpp"
 #include "window.hpp"
 
 namespace Eng {
+
 class Controller {
 public:
   Controller(const Controller &) = delete;
   Controller &operator=(const Controller &) = delete;
-  Controller(Window *window);
+  Controller(Window *window, Renderer* renderer);
   void loop();
 
 private:
@@ -15,6 +17,8 @@ private:
   void process_events();
   void render();
   bool quit_app = false;
-  Window *_window;
+  Window *_window = nullptr;
+  Renderer *_renderer = nullptr;
 };
+
 } // namespace Eng

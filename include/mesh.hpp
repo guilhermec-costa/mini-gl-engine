@@ -22,10 +22,14 @@ public:
   Mesh& operator=(Mesh&& other) noexcept;
 
   void set_material(Material* material);
-  void draw() const;
+  Material* get_material() const;
+  unsigned int get_VAO() const;
+  int get_vertex_count() const;
+
+public:
+  Material* material = NULL;
 
 private:
-  Material* material = NULL;
   uint _VAO, _VBO;
   size_t vertex_count;
 };

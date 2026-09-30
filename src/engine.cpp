@@ -11,7 +11,8 @@
 #include <vector>
 
 namespace Eng {
-Controller::Controller(Window *window) : _window(window) {};
+Controller::Controller(Window *window, Renderer* renderer) 
+  : _window(window), _renderer(renderer) {};
 
 bool Controller::should_stop() const {
   return glfwWindowShouldClose(_window->unwrap()) || quit_app;
@@ -26,9 +27,9 @@ void Controller::process_events() {
 void Controller::render() {}
 
 void Controller::loop() {
-  auto shader = Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
-  if(!shader) {
-    std::cout << shader.error() << std::endl;
+  auto texture_shader = Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
+  if(!texture_shader) {
+    std::cout << texture_shader.error() << std::endl;
     return;
   }
 
@@ -41,14 +42,27 @@ void Controller::loop() {
     std::cout << color_shader.error() << std::endl;
     return;
   }
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, glm::vec3(0.3f, 0.0f, 0.0f));
-  color_shader->patch_uniform("model", model);
 
   Albedo albedo(albedopath("wood.jpg").c_str(), GL_RGB, GL_RGB);
-  Material material(*color_shader, albedo);
+  Material texture_material(*texture_shader, albedo);
+  Material color_material(*color_shader);
 
-  Eng::Mesh m1(
+  Eng::Mesh t1(
+    std::vector{
+      0.65f,  0.5f, 0.0f,   0.5f, 1.0f,
+      0.95f, -0.5f, 0.0f,   0.0f, 0.0f,
+      0.35f, -0.5f, 0.0f,   1.0f, 0.0f
+    },
+    std::vector{
+      VertexAttribute(0, 3, 0),
+      VertexAttribute(1, 2, sizeof(float) * 3)
+    },
+    3,
+    sizeof(float) * 5,
+    &texture_material
+  );
+
+  Eng::Mesh t2(
     std::vector{
       0.0f, 0.5f, 0.0f, 0.5f, 1.0f,
       0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -60,13 +74,17 @@ void Controller::loop() {
     },
     3,
     sizeof(float) * 5,
-    &material
+    &color_material
   );
   
   while (!should_stop()) {
     process_events();
     _window->clear({0.0f, 0.0f, 0.0f, 1.0f});
-    m1.draw();
+
+    texture_shader->patch_uniform("albedo", 0);
+    _renderer->draw(t1);
+    color_shader->patch_uniform("color", EngTypes::Color(0.f, 0.f, 255.f, 1.f));
+    _renderer->draw(t2);
     glfwSwapBuffers(_window->unwrap());
     glfwPollEvents();
   }

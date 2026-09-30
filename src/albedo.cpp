@@ -30,6 +30,8 @@ Albedo::Albedo(const char *path, int internal_format, int pixel_format)
                     GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
+
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Albedo::Albedo(Albedo &&other) noexcept : id(other.id) { other.id = 0; }
