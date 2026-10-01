@@ -1,6 +1,52 @@
+#include "primitives.hpp"
 #include <glad/glad.h>
+#include "glm/ext/matrix_transform.hpp"
 #include "material.hpp"
 #include "mesh.hpp"
+
+namespace Eng {
+
+Transform::Transform()
+  : position(glm::vec3(0.0)), 
+    scale_factor(glm::vec3(1.0f)), 
+    rotation_axis(glm::vec3(0.0f, 1.0f, 0.0f)),
+    rotation_angle(0.0f) {};
+
+glm::mat4 Transform::matrix() const {
+  glm::mat4 mat = glm::mat4(1.0);
+  mat = glm::translate(mat, position);
+  mat = glm::rotate(mat, glm::radians(rotation_angle), rotation_axis);
+  mat = glm::scale(mat, scale_factor);
+
+  return mat;
+}
+
+void Transform::move(const glm::vec3& offset) {
+  position += offset;
+};
+
+void Transform::rotate(float angle, const glm::vec3& axis) {
+  rotation_angle += angle;
+  rotation_axis = glm::normalize(axis);
+}
+
+void Transform::set_position(const glm::vec3& pos) {
+  position = pos;
+}
+
+void Transform::set_scale(const glm::vec3& factor) {
+  scale_factor = factor;
+}
+
+void Transform::set_rotate(float angle, const glm::vec3& axis) {
+  rotation_angle = angle;
+  rotation_axis = axis;
+}
+
+void Transform::scale(const glm::vec3& factor) {
+  scale_factor *= factor;
+}
+}
 
 Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4, Eng::Material* material) {
   return Eng::Mesh(
@@ -34,6 +80,67 @@ Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, Eng::Material* 
       Eng::VertexAttribute(1, 2, sizeof(float) * 3)
     },
     3,
+    sizeof(float) * 5,
+    material
+  );
+}
+
+Eng::Mesh make_cube(Eng::Material* material) {
+  float vertexData[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+  };
+
+  size_t size = sizeof(vertexData) / sizeof(vertexData[0]);
+  const std::vector<float> data(vertexData, vertexData + size);
+
+  return Eng::Mesh(
+    data,
+    {},
+    std::vector{
+      Eng::VertexAttribute(0, 3, 0),
+      Eng::VertexAttribute(1, 2, sizeof(float) * 3)
+    },
+    36,
     sizeof(float) * 5,
     material
   );

@@ -1,5 +1,7 @@
 #include "engine.hpp"
 #include "GLFW/glfw3.h"
+#include "glm/ext/matrix_transform.hpp"
+#include "renderer.hpp"
 #include "texture2d.hpp"
 #include "color_shader.hpp"
 #include "material.hpp"
@@ -46,27 +48,33 @@ void Controller::loop() {
   Material texture_material(*texture_shader, albedo);
   Material color_material(*color_shader);
 
-  Eng::Mesh tri1 = make_triangle(
+  Eng::Mesh tri1mesh = make_triangle(
       glm::vec3(-0.8f,  0.5f, 0.0f),
       glm::vec3(-0.3f, -0.5f, 0.0f),
       glm::vec3(-1.0f, -0.5f, 0.0f),
       &texture_material
   );
+  RenderObject tri1{tri1mesh};
 
-  Eng::Mesh tri2 = make_triangle(
+  Eng::Mesh tri2mesh = make_triangle(
       glm::vec3( 0.8f,  0.5f, 0.0f),
       glm::vec3( 1.0f, -0.5f, 0.0f),
       glm::vec3( 0.3f, -0.5f, 0.0f),
       &color_material
   );
+  RenderObject tri2{tri2mesh};
 
-  Eng::Mesh quad = make_quad(
+  Eng::Mesh quadmesh = make_quad(
     glm::vec3(-0.5f,  0.5f, 0.0f),
     glm::vec3( 0.5f,  0.5f, 0.0f),
     glm::vec3( 0.5f, -0.5f, 0.0f),
     glm::vec3(-0.5f, -0.5f, 0.0f),
     &color_material
   );
+  RenderObject quad{quadmesh};
+
+  Eng::Mesh cubemesh = make_cube(&color_material);
+  RenderObject cube{cubemesh};
   
   float delta_time = 0.0f, last_frame_time = 0.0f;
   while (!should_stop()) {
@@ -77,14 +85,20 @@ void Controller::loop() {
     process_events();
     _window->clear({0.0f, 0.0f, 0.0f, 1.0f});
 
-    glm::mat4 projection = glm::mat4(1.0f);
-    const float ratio = _window->aspect_ratio();
     texture_shader->patch_uniform("albedo", 0);
     color_shader->patch_uniform("color", EngTypes::Color(128.0f, 128.0f, 0.0f, 1.0f));
-    _renderer->draw(quad);
+
+    tri1.transform.set_position(glm::vec3(-0.8f,  0.5f, 0.0f));
+    tri1.transform.set_scale(glm::vec3(0.3f, 0.3f, 1.0f));
+    tri1.transform.set_rotate(glfwGetTime() * 60, glm::vec3(1.0f, 0.0, 1.0f));
     _renderer->draw(tri1);
     color_shader->patch_uniform("color", EngTypes::Color(128.0f, 128.0f, 128.0f, 1.0f));
     _renderer->draw(tri2);
+    color_shader->patch_uniform("color", EngTypes::Color{1.0f, 0.0, 125.0f, 1.0f});
+
+    quad.transform.set_scale(glm::vec3(0.5f, 1.0f, 1.0f));
+    quad.transform.set_rotate(glfwGetTime() * 60, glm::vec3(0.0f, 1.0, 1.0f));
+    _renderer->draw(quad);
     glfwSwapBuffers(_window->unwrap());
     glfwPollEvents();
   }
