@@ -4,7 +4,7 @@ namespace Eng {
 
 void Material::bind() const {
   if (albedo) {
-    albedo->bind(0);
+    albedo->bind(ALBEDO_UNIT);
     shader.patch_uniform("albedo", ALBEDO_UNIT);
   }
 
