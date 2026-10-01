@@ -10,7 +10,11 @@ void Renderer::draw(const Mesh& mesh) {
     material->bind();
 
   glBindVertexArray(mesh.get_VAO());
-  glDrawArrays(GL_TRIANGLES, 0, mesh.get_vertex_count());
+  if(mesh.get_index_count() > 0) {
+    glDrawElements(GL_TRIANGLES, mesh.get_index_count(), GL_UNSIGNED_INT, nullptr);
+  } else {
+    glDrawArrays(GL_TRIANGLES, 0, mesh.get_vertex_count());
+  }
 
   unsigned int error = glGetError();
   if (error) {

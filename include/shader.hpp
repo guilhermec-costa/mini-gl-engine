@@ -22,7 +22,7 @@ struct Uniform {
 
 const Uniform IDENTITY_MODEL_UNIFORM = Uniform{"model", glm::mat4(1.0f)};
 const Uniform IDENTITY_VIEW_UNIFORM = Uniform("view", glm::mat4(1.0f));
-const Uniform IDENTITY_PROJECTION_UNIF0RM = Uniform("projection", glm::mat4(1.0f));
+const Uniform IDENTITY_PROJECTION_UNIFORM = Uniform("projection", glm::mat4(1.0f));
 
 namespace Eng {
 
@@ -34,7 +34,9 @@ public:
   Shader &operator=(Shader &&other) noexcept; // move assignment operator
   static std::expected<Shader, const char *> create(const char *vertex_path,
                                                     const char *frag_path);
-
+  
+  template<typename T>
+  T get_uniform(std::string name) const;
   void add_uniform(std::string name, UniformValue value);
   void add_uniform(Uniform uniform);
   void patch_uniform(std::string name, UniformValue new_value);

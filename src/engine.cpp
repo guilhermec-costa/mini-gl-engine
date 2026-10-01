@@ -2,7 +2,6 @@
 #include "GLFW/glfw3.h"
 #include "albedo.hpp"
 #include "color_shader.hpp"
-#include "glm/ext/matrix_transform.hpp"
 #include "material.hpp"
 #include "mesh.hpp"
 #include "primitives.hpp"
@@ -26,13 +25,14 @@ void Controller::process_events() {
 
 void Controller::render() {}
 
+constexpr float CAMERA_FOV = 45.0f;
+
 void Controller::loop() {
   auto texture_shader = Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
   if(!texture_shader) {
     std::cout << texture_shader.error() << std::endl;
     return;
   }
-
   auto color_shader = ColorShader::create_color_shader(
     shaderpath("frag_base_color.glsl").c_str(), 
     EngTypes::Color{1.0f, 0.5f, 0.0f, 1.0f}
@@ -47,44 +47,45 @@ void Controller::loop() {
   Material texture_material(*texture_shader, albedo);
   Material color_material(*color_shader);
 
-  Eng::Mesh t1(
-    std::vector{
-      0.65f,  0.5f, 0.0f,   0.5f, 1.0f,
-      0.95f, -0.5f, 0.0f,   0.0f, 0.0f,
-      0.35f, -0.5f, 0.0f,   1.0f, 0.0f
-    },
-    std::vector{
-      VertexAttribute(0, 3, 0),
-      VertexAttribute(1, 2, sizeof(float) * 3)
-    },
-    3,
-    sizeof(float) * 5,
-    &texture_material
+  Eng::Mesh tri1 = make_triangle(
+      glm::vec3(-0.8f,  0.5f, 0.0f),
+      glm::vec3(-0.3f, -0.5f, 0.0f),
+      glm::vec3(-1.0f, -0.5f, 0.0f),
+      &texture_material
   );
 
-  Eng::Mesh t2(
-    std::vector{
-      0.0f, 0.5f, 0.0f, 0.5f, 1.0f,
-      0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-      -0.5f, -0.5f, 0.0f, 1.0f, 0.0f
-    },
-    std::vector{
-      VertexAttribute(0, 3, 0),
-      VertexAttribute(1, 2, sizeof(float) * 3)
-    },
-    3,
-    sizeof(float) * 5,
+  Eng::Mesh tri2 = make_triangle(
+      glm::vec3( 0.8f,  0.5f, 0.0f),
+      glm::vec3( 1.0f, -0.5f, 0.0f),
+      glm::vec3( 0.3f, -0.5f, 0.0f),
+      &color_material
+  );
+
+  Eng::Mesh quad = make_quad(
+    glm::vec3(-0.5f,  0.5f, 0.0f),
+    glm::vec3( 0.5f,  0.5f, 0.0f),
+    glm::vec3( 0.5f, -0.5f, 0.0f),
+    glm::vec3(-0.5f, -0.5f, 0.0f),
     &color_material
   );
   
+  float delta_time = 0.0f, last_frame_time = 0.0f;
   while (!should_stop()) {
+    const float frame_time = glfwGetTime();
+    delta_time = frame_time - last_frame_time;
+    last_frame_time = frame_time;
+
     process_events();
     _window->clear({0.0f, 0.0f, 0.0f, 1.0f});
 
+    glm::mat4 projection = glm::mat4(1.0f);
+    const float ratio = _window->aspect_ratio();
     texture_shader->patch_uniform("albedo", 0);
-    _renderer->draw(t1);
-    color_shader->patch_uniform("color", EngTypes::Color(0.f, 0.f, 255.f, 1.f));
-    _renderer->draw(t2);
+    color_shader->patch_uniform("color", EngTypes::Color(128.0f, 128.0f, 0.0f, 1.0f));
+    _renderer->draw(quad);
+    _renderer->draw(tri1);
+    color_shader->patch_uniform("color", EngTypes::Color(128.0f, 128.0f, 128.0f, 1.0f));
+    _renderer->draw(tri2);
     glfwSwapBuffers(_window->unwrap());
     glfwPollEvents();
   }

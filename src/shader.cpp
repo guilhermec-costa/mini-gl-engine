@@ -19,7 +19,7 @@ namespace Eng {
 Shader::Shader(unsigned int id) : _program_id(id) {
   add_uniform(IDENTITY_MODEL_UNIFORM);
   add_uniform(IDENTITY_VIEW_UNIFORM);
-  add_uniform(IDENTITY_PROJECTION_UNIF0RM);
+  add_uniform(IDENTITY_PROJECTION_UNIFORM);
   add_uniform("albedo", 0);
 };
 
@@ -165,6 +165,11 @@ void Shader::add_uniform(Uniform u) {
 
 void Shader::patch_uniform(std::string name, UniformValue new_value) {
   uniforms.at(name) = new_value;
+}
+
+template <typename T>
+T Shader::get_uniform(std::string name) const {
+  return std::get<T>(uniforms.at(name));
 }
 
 int Shader::get_uniform_location(const char* name) const {
