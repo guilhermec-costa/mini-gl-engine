@@ -1,5 +1,5 @@
 #include <glad/glad.h>
-#include "albedo.hpp"
+#include "texture2d.hpp"
 #include "vendor/stb_image.h"
 
 const std::filesystem::path ALBEDO_PATH = std::filesystem::path(PROJECT_ROOT) / "assets/albedos";
@@ -7,7 +7,9 @@ std::filesystem::path albedopath(const char *path) {
   return std::filesystem::path(ALBEDO_PATH) / path;
 }
 
-Albedo::Albedo(const char *path, int internal_format, int pixel_format) 
+namespace Eng {
+
+Texture2D::Texture2D(const char *path, int internal_format, int pixel_format) 
 : repeat_x_mode(GL_REPEAT), repeat_y_mode(GL_REPEAT) {
   glGenTextures(1, &id);
   glActiveTexture(GL_TEXTURE0);
@@ -17,7 +19,7 @@ Albedo::Albedo(const char *path, int internal_format, int pixel_format)
   unsigned char *data = stbi_load(path, &w, &h, &nrch, 0);
   if (data) {
     glTexImage2D(GL_TEXTURE_2D, 0, internal_format, w, h, 0, pixel_format,
-                 GL_UNSIGNED_BYTE, data);
+                  GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
   }
 
@@ -34,9 +36,9 @@ Albedo::Albedo(const char *path, int internal_format, int pixel_format)
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Albedo::Albedo(Albedo &&other) noexcept : id(other.id) { other.id = 0; }
+Texture2D::Texture2D(Texture2D &&other) noexcept : id(other.id) { other.id = 0; }
 
-Albedo &Albedo::operator=(Albedo &&other) noexcept {
+Texture2D &Texture2D::operator=(Texture2D &&other) noexcept {
   if (this != &other) {
     if (id != 0)
       glDeleteTextures(1, &id);
@@ -47,12 +49,13 @@ Albedo &Albedo::operator=(Albedo &&other) noexcept {
   return *this;
 }
 
-Albedo::~Albedo() { 
+Texture2D::~Texture2D() { 
   if(id != 0)
     glDeleteTextures(1, &id); 
 }
 
-void Albedo::bind_tex_unit(unsigned short index) const {
+void Texture2D::bind(unsigned short index) const {
   glActiveTexture(GL_TEXTURE0 + index);
   glBindTexture(GL_TEXTURE_2D, id);
+}
 }

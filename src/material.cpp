@@ -3,14 +3,14 @@
 namespace Eng {
 
 void Material::bind() const {
-  const unsigned short unit = 0;
   if (albedo) {
-    albedo->bind_tex_unit(unit);
+    albedo->bind(0);
+    shader.patch_uniform("albedo", ALBEDO_UNIT);
   }
 
   shader.bind();
   shader.apply();
 }
 
-void Material::set_albedo(Albedo &a) { albedo = &a; }
+void Material::set_albedo(Texture2D &a) { albedo = &a; }
 } // namespace Eng

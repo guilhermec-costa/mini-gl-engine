@@ -1,21 +1,22 @@
 #pragma once
 
-#include "albedo.hpp"
+#include "texture2d.hpp"
 #include "shader.hpp"
-#include "types.hpp"
 
 namespace Eng {
 
 class Material {
+  static constexpr unsigned short ALBEDO_UNIT = 0;
+
 public:
   Material(Shader& shader): shader(shader) {};
-  Material(Shader& shader, Albedo& albedo): shader(shader), albedo(&albedo) {};
+  Material(Shader& shader, Texture2D& albedo): shader(shader), albedo(&albedo) {};
   void bind() const;
-  void set_albedo(Albedo& albedo);
+  void set_albedo(Texture2D& albedo);
 
 public:
   Shader& shader;
-  Albedo* albedo = nullptr;
+  Texture2D* albedo = nullptr;
 
 private:
   Material();
