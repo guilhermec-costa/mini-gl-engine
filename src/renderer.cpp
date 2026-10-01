@@ -4,6 +4,8 @@
 
 namespace Eng {
 
+Renderer::Renderer() {}
+
 void Renderer::draw(const RenderObject& object) {
   Material* material = object.mesh.get_material();
   if(material) {

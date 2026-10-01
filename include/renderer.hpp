@@ -12,6 +12,7 @@ namespace Eng {
 
 class Renderer {
 public:
+  Renderer();
   void draw(const RenderObject& object);
 };
 

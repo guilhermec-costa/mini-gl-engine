@@ -1,6 +1,5 @@
 #include "engine.hpp"
 #include "GLFW/glfw3.h"
-#include "glm/ext/matrix_transform.hpp"
 #include "renderer.hpp"
 #include "texture2d.hpp"
 #include "color_shader.hpp"
@@ -8,6 +7,7 @@
 #include "mesh.hpp"
 #include "primitives.hpp"
 #include "shader.hpp"
+#include "meshes/cube_test.hpp"
 #include <iostream>
 
 namespace Eng {
@@ -73,9 +73,11 @@ void Controller::loop() {
   );
   RenderObject quad{quadmesh};
 
-  Eng::Mesh cubemesh = make_cube(&color_material);
+  Eng::Mesh cubemesh = make_cube(cube_mesh, &texture_material);
   RenderObject cube{cubemesh};
   
+  glEnable(GL_DEPTH_TEST);
+
   float delta_time = 0.0f, last_frame_time = 0.0f;
   while (!should_stop()) {
     const float frame_time = glfwGetTime();
@@ -96,9 +98,8 @@ void Controller::loop() {
     _renderer->draw(tri2);
     color_shader->patch_uniform("color", EngTypes::Color{1.0f, 0.0, 125.0f, 1.0f});
 
-    quad.transform.set_scale(glm::vec3(0.5f, 1.0f, 1.0f));
-    quad.transform.set_rotate(glfwGetTime() * 60, glm::vec3(0.0f, 1.0, 1.0f));
-    _renderer->draw(quad);
+    cube.transform.set_rotate(glfwGetTime() * 60, glm::vec3(0.0f, 1.0f, 0.0));
+    _renderer->draw(cube);
     glfwSwapBuffers(_window->unwrap());
     glfwPollEvents();
   }
