@@ -19,6 +19,9 @@ Window::Window(uint16_t w, uint16_t h, const char *title)
   }
 }
 
+float Window::aspect_ratio() const {
+  return static_cast<float>(width) / static_cast<float>(height);
+}
 void Window::clear(const EngTypes::Color color) const {
   glClearColor(color.r, color.g, color.b, color.a);
   glClear(GL_COLOR_BUFFER_BIT);

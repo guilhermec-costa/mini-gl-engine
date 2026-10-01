@@ -1,14 +1,20 @@
 #include <glad/glad.h>
 #include "mesh.hpp"
-#include "primitives.hpp"
 
 namespace Eng {
 
 Mesh::Mesh(const std::vector<float> &raw_data,
+           const std::vector<unsigned int>& indices,
            const std::vector<VertexAttribute> &attributes, size_t _vertex_count,
-           size_t stride, Material* _material) {
-  uint VBO, VAO;
+           size_t stride, Material *_material)
+  : index_count(0), vertex_count(0) {
+  uint VBO, VAO, EBO;
   glGenBuffers(1, &VBO);
+
+  if (!indices.empty()) {
+    index_count = indices.size();
+    glGenBuffers(1, &EBO);
+  }
   glGenVertexArrays(1, &VAO);
 
   _VBO = VBO;
@@ -25,6 +31,11 @@ Mesh::Mesh(const std::vector<float> &raw_data,
     glEnableVertexAttribArray(attr.location);
   }
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  if (index_count > 0) {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+  }
   glBindVertexArray(0);
 
   vertex_count = _vertex_count;
@@ -37,8 +48,8 @@ Mesh::Mesh(Mesh &&other) noexcept
   other._VBO = 0;
 }
 
-Mesh& Mesh::operator=(Mesh&& other) noexcept {
-  if(this != &other) {
+Mesh &Mesh::operator=(Mesh &&other) noexcept {
+  if (this != &other) {
     glDeleteBuffers(1, &_VBO);
     glDeleteVertexArrays(1, &_VAO);
 
@@ -56,20 +67,13 @@ Mesh::~Mesh() {
   glDeleteVertexArrays(1, &_VAO);
 }
 
-Material* Mesh::get_material() const {
-  return material;
-}
+Material *Mesh::get_material() const { return material; }
 
-int Mesh::get_vertex_count() const {
-  return vertex_count;
-}
+size_t Mesh::get_vertex_count() const { return vertex_count; }
+size_t Mesh::get_index_count() const { return index_count; }
 
-unsigned int Mesh::get_VAO() const {
-  return _VAO;
-}
+unsigned int Mesh::get_VAO() const { return _VAO; }
 
-void Mesh::set_material(Material* m) {
-  material = m;
-}
+void Mesh::set_material(Material *m) { material = m; }
 
 } // namespace Eng

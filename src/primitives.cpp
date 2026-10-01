@@ -1,27 +1,40 @@
 #include <glad/glad.h>
-#include "primitives.hpp"
-#include "albedo.hpp"
 #include "material.hpp"
 #include "mesh.hpp"
-#include "shader.hpp"
 
-void draw_quad(unsigned int width, unsigned int height, glm::vec3 origin) {
-  auto shader = Eng::Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
-  Albedo albedo(albedopath("wood.jpg").c_str(), GL_RGB, GL_RGB);
-  Eng::Material material(*shader, albedo);
+Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4, Eng::Material* material) {
+  return Eng::Mesh(
+    std::vector{
+      v1.x, v1.y, v1.z, 0.0f, 1.0f,
+      v2.x, v2.y, v2.z, 1.0f, 1.0f,
+      v3.x, v3.y, v3.z, 1.0f, 0.0f,
+      v4.x, v4.y, v4.z, 0.0f, 0.0f,
+    },
+    {0, 1, 3, 1, 2, 3},
+    std::vector{
+      Eng::VertexAttribute(0, 3, 0),
+      Eng::VertexAttribute(1, 2, sizeof(float) * 3)
+    },
+    4,
+    sizeof(float) * 5,
+    material
+  ); 
+}
 
-  // Eng::Mesh m1(
-  //   std::vector{
-  //     0.0f, 0.5f, 0.0f, 0.5f, 1.0f,
-  //     0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-  //     -0.5f, -0.5f, 0.0f, 1.0f, 0.0f
-  //   },
-  //   std::vector{
-  //     VertexAttribute(0, 3, 0),
-  //     VertexAttribute(1, 2, sizeof(float) * 3)
-  //   },
-  //   3,
-  //   sizeof(float) * 5,
-  //   &material
-  // ); 
+Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, Eng::Material* material) {
+  return Eng::Mesh(
+    std::vector{
+      v1.x, v1.y, v1.z, 0.5f, 1.0f,
+      v2.x, v2.y, v2.z, 1.0f, 0.0f,
+      v3.x, v3.y, v3.z, 0.0f, 0.0f,
+    },
+    {},
+    std::vector{
+      Eng::VertexAttribute(0, 3, 0),
+      Eng::VertexAttribute(1, 2, sizeof(float) * 3)
+    },
+    3,
+    sizeof(float) * 5,
+    material
+  );
 }
