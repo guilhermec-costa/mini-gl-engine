@@ -8,7 +8,7 @@ namespace Eng {
 
 class Transform {
 public:
-  Transform();
+  Transform() = default;
   void set_position(const glm::vec3& pos);
   void move(const glm::vec3& offset);
   void set_rotate(float angle, const glm::vec3& axis);
@@ -18,10 +18,11 @@ public:
   glm::mat4 matrix() const;
 
 private:
-  glm::vec3 position;
-  glm::vec3 scale_factor;
-  glm::vec3 rotation_axis;
-  float rotation_angle;
+  glm::vec3 position{0.0f};
+  glm::vec3 scale_factor{1.0f};
+  glm::vec3 rotation_axis{0.0f, 0.0f, 1.0f};
+  float angular_velocity{0.0f};
+  float rotation_angle{0.0f};
 };
 
 } // namespace Eng
@@ -30,4 +31,4 @@ Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 v4,
                     Eng::Material *material);
 Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3,
                         Eng::Material *material);
-Eng::Mesh make_cube(Eng::Material *material);
+Eng::Mesh make_cube(const std::vector<float>& data, Eng::Material *material);
