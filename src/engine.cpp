@@ -1,13 +1,12 @@
 #include "engine.hpp"
 #include "GLFW/glfw3.h"
-#include "albedo.hpp"
+#include "texture2d.hpp"
 #include "color_shader.hpp"
 #include "material.hpp"
 #include "mesh.hpp"
 #include "primitives.hpp"
 #include "shader.hpp"
 #include <iostream>
-#include <vector>
 
 namespace Eng {
 Controller::Controller(Window *window, Renderer* renderer) 
@@ -43,7 +42,7 @@ void Controller::loop() {
     return;
   }
 
-  Albedo albedo(albedopath("wood.jpg").c_str(), GL_RGB, GL_RGB);
+  Texture2D albedo(albedopath("wood.jpg").c_str(), GL_RGB, GL_RGB);
   Material texture_material(*texture_shader, albedo);
   Material color_material(*color_shader);
 
