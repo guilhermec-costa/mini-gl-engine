@@ -4,7 +4,9 @@
 
 namespace Eng {
 
-Renderer::Renderer() {}
+Renderer::Renderer() {
+  glEnable(GL_DEPTH_TEST);
+}
 
 void Renderer::draw(const RenderObject& object) {
   Material* material = object.mesh.get_material();

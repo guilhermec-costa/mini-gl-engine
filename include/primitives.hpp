@@ -17,7 +17,7 @@ public:
   void scale(const glm::vec3& factor);
   glm::mat4 matrix() const;
 
-private:
+public:
   glm::vec3 position{0.0f};
   glm::vec3 scale_factor{1.0f};
   glm::vec3 rotation_axis{0.0f, 0.0f, 1.0f};
