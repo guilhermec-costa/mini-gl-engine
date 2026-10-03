@@ -8,6 +8,7 @@ namespace Eng {
 
 class Texture2D {
 public:
+  Texture2D() = default;
   Texture2D(const char *path, int internal_format, int pixel_format);
   ~Texture2D();
 

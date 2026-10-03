@@ -21,10 +21,11 @@ public:
 
 class Mesh {
 public:
+  Mesh() = default;
   Mesh(const std::vector<float>& rawData,
        const std::vector<unsigned int>& indices,
-       const std::vector<VertexAttribute> &attributes, size_t vertex_count,
-       size_t stride, Material* material);
+       const std::vector<VertexAttribute> &attributes, 
+       size_t vertex_count, size_t stride);
   ~Mesh();
 
   Mesh(const Mesh&) = delete;
@@ -39,11 +40,8 @@ public:
   size_t get_vertex_count() const;
   size_t get_index_count() const;
 
-public:
-  Material* material = NULL;
-
 private:
-  uint _VAO, _VBO;
+  uint _VAO, _VBO, _EBO;
   size_t vertex_count;
   size_t index_count;
 };

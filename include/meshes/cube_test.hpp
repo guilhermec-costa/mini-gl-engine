@@ -1,6 +1,6 @@
 #include <vector>
 
-static std::vector<float> cube_mesh{
+static std::vector<float> cube_test_mesh{
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,

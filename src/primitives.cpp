@@ -42,7 +42,7 @@ void Transform::scale(const glm::vec3& factor) {
 }
 }
 
-Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4, Eng::Material* material) {
+Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4) {
   return Eng::Mesh(
     std::vector{
       v1.x, v1.y, v1.z, 0.0f, 1.0f,
@@ -56,12 +56,10 @@ Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4, Eng::
       Eng::VertexAttribute(1, 2, sizeof(float) * 3)
     },
     4,
-    sizeof(float) * 5,
-    material
-  ); 
+    sizeof(float) * 5); 
 }
 
-Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, Eng::Material* material) {
+Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3) {
   return Eng::Mesh(
     std::vector{
       v1.x, v1.y, v1.z, 0.5f, 1.0f,
@@ -74,12 +72,11 @@ Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, Eng::Material* 
       Eng::VertexAttribute(1, 2, sizeof(float) * 3)
     },
     3,
-    sizeof(float) * 5,
-    material
+    sizeof(float) * 5
   );
 }
 
-Eng::Mesh make_cube(const std::vector<float>& data, Eng::Material* material) {
+Eng::Mesh make_cube(const std::vector<float>& data) {
   return Eng::Mesh(
     data,
     {},
@@ -88,7 +85,5 @@ Eng::Mesh make_cube(const std::vector<float>& data, Eng::Material* material) {
       Eng::VertexAttribute(1, 2, sizeof(float) * 3)
     },
     data.size(),
-    sizeof(float) * 5,
-    material
-  );
+    sizeof(float) * 5);
 }

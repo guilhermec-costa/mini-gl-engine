@@ -6,14 +6,10 @@
 namespace Eng {
 
 ColorShader::ColorShader(unsigned int program_id)
-    : Shader(program_id), color({0.0f, 0.0f, 0.0f, 1.0f}) {
-  add_uniform({"color", color});
-};
+    : Shader(program_id), color({0.0f, 0.0f, 0.0f, 1.0f}) {};
 
 ColorShader::ColorShader(unsigned int program_id, EngTypes::Color color)
-    : Shader(program_id), color(color) {
-  add_uniform({"color", color});
-};
+    : Shader(program_id), color(color) {};
 
 std::expected<ColorShader, const char *>
 ColorShader::create_color_shader(const char *frag_path,

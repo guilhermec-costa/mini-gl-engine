@@ -23,11 +23,13 @@ struct Uniform {
 const Uniform IDENTITY_MODEL_UNIFORM = Uniform{"model", glm::mat4(1.0f)};
 const Uniform IDENTITY_VIEW_UNIFORM = Uniform("view", glm::mat4(1.0f));
 const Uniform IDENTITY_PROJECTION_UNIFORM = Uniform("projection", glm::mat4(1.0f));
+using UniformMap = std::unordered_map<std::string, UniformValue>;
 
 namespace Eng {
 
 class Shader {
 public:
+  Shader() = default;
   Shader(const Shader &) = delete;            // copy contructor
   Shader &operator=(const Shader &) = delete; // copy assignment operator
   Shader(Shader &&other) noexcept;            // move constructor
@@ -46,7 +48,9 @@ public:
   void set_uniformmat4f(const char* name, glm::mat4 mat) const;
 
   virtual void bind() const;
-  virtual void apply() const;
+  virtual void apply_internal_uniforms() const;
+  virtual void apply_external_uniforms(const UniformMap uniforms) const;
+  void update_uniform(std::string name, UniformValue value) const;
   ~Shader();
 
 protected:
@@ -57,11 +61,9 @@ protected:
 
 protected:
   unsigned int _program_id;
+  UniformMap uniforms;
 
 private:
     int get_uniform_location(const char *name) const;
-
-private:
-    std::unordered_map<std::string, UniformValue> uniforms;
 };
 } // namespace Eng
