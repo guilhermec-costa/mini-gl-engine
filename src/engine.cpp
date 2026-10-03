@@ -33,9 +33,24 @@ void Controller::process_input(float delta_time) {
   if(key_pressed(window, GLFW_KEY_LEFT_SHIFT)) camera->move_down(delta_time);
 }
 
+void Controller::process_mouse_input(GLFWwindow* window, double xpos, double ypos) {
+  Controller* controller = static_cast<Controller*>(glfwGetWindowUserPointer(window));
+  controller->camera->update_direction(xpos, ypos);
+};
+
+void Controller::process_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset) {
+  Controller* controller = static_cast<Controller*>(glfwGetWindowUserPointer(window));
+  controller->camera->update_zoom(xoffset, yoffset);
+}
+
 void Controller::render() {}
 
 void Controller::loop() {
+  glfwSetWindowUserPointer(_window->unwrap(), this);
+  glfwSetInputMode(_window->unwrap(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetCursorPosCallback(_window->unwrap(), Controller::process_mouse_input);
+  glfwSetScrollCallback(_window->unwrap(), Controller::process_mouse_wheel);
+  
   auto texture_shader = Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
   if(!texture_shader) {
     std::cout << texture_shader.error() << std::endl;
@@ -89,13 +104,13 @@ void Controller::loop() {
     glm::vec3(0.0f, 0.0f, 3.0f), 
     glm::vec3(0.0f, 0.0f, 0.0f), 
     glm::vec3(0.0f, 1.0f, 0.0f),
+    _window->width/2.0f,
+    _window->height/2.0f,
     45.f,
     _window->aspect_ratio(),
     0.1f, 100.f
   ));
 
-  texture_shader->patch_uniform("projection", camera->projection());
-  color_shader->patch_uniform("projection", camera->projection());
   while (!should_stop()) {
     const float frame_time = glfwGetTime();
     delta_time = frame_time - last_frame_time;
@@ -103,6 +118,9 @@ void Controller::loop() {
 
     process_input(delta_time);
     _window->clear({0.0f, 0.0f, 0.0f, 1.0f});
+
+    texture_shader->patch_uniform("projection", camera->projection());
+    color_shader->patch_uniform("projection", camera->projection());
 
     texture_shader->patch_uniform("albedo", 0);
     color_shader->patch_uniform("color", EngTypes::Color(128.0f, 128.0f, 0.0f, 1.0f));

@@ -4,10 +4,12 @@
 
 namespace Eng {
 
-Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 up, float fov,
-               float aspect_ratio, float near_plane, float far_plane)
-    : position(position), front(glm::normalize(target - position)), up(up), FOV(fov),
-      aspect_ratio(aspect_ratio), near_plane(near_plane), far_plane(far_plane) {
+Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 up, 
+              float initial_x, float initial_y, 
+              float fov, float aspect_ratio, float near_plane, float far_plane)
+    : position(position), front(glm::normalize(target - position)), up(up),
+      last_x(initial_x), last_y(initial_y),
+      fov(fov), aspect_ratio(aspect_ratio), near_plane(near_plane), far_plane(far_plane) {
 }
 
 glm::mat4 Camera::view_matrix() const { 
@@ -15,8 +17,47 @@ glm::mat4 Camera::view_matrix() const {
 }
 
 glm::mat4 Camera::projection() const {
-  return glm::perspective(glm::radians(FOV), aspect_ratio, near_plane,
+  return glm::perspective(glm::radians(fov), aspect_ratio, near_plane,
                             far_plane);
+}
+
+void Camera::update_direction(double xpos, double ypos) {
+  if(first_mouse) {
+    last_x = xpos;
+    last_y = ypos;
+    first_mouse = false;
+  }
+
+  float xoffset = xpos - last_x;
+  float yoffset = last_y - ypos;
+  last_x = xpos;
+  last_y = ypos;
+
+  xoffset *= sensitivity;
+  yoffset *= sensitivity;
+  yaw += xoffset;
+  pitch += yoffset;
+
+  if(pitch > 89.0f)
+    pitch = 89.0f;
+  if(pitch < -89.0f)
+    pitch = -89.0f;
+
+  glm::vec3 direction;
+  direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+  direction.y = sin(glm::radians(pitch));
+  direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+  front = glm::normalize(direction);
+}
+
+void Camera::update_zoom(double xoffset, double yoffset) {
+  fov -= (float)yoffset;
+  if(fov < 1.0f) {
+    fov = 1.0f;
+  }
+  if(fov > 45.0f) {
+    fov = 45.0f;
+  }
 }
 
 void Camera::move_front(float delta) {
