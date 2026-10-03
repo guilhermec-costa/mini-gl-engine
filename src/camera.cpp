@@ -16,7 +16,7 @@ glm::mat4 Camera::view_matrix() const {
   return glm::lookAt(position, position + front, up); 
 }
 
-glm::mat4 Camera::projection() const {
+glm::mat4 Camera::projection_matrix() const {
   return glm::perspective(glm::radians(fov), aspect_ratio, near_plane,
                             far_plane);
 }

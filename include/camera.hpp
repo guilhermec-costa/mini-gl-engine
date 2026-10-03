@@ -6,12 +6,12 @@ namespace Eng {
 
 class Camera {
 public:
-  Camera() = delete;
+  Camera() = default;
   Camera(glm::vec3 position, glm::vec3 target, glm::vec3 up, float initial_x, float initial_y, float fov,
          float aspect_ratio, float near_plane, float far_plane);
 
   glm::mat4 view_matrix() const;
-  glm::mat4 projection() const; 
+  glm::mat4 projection_matrix() const; 
 
   void update_direction(double xpos, double ypos);
   void update_zoom(double xoffset, double yoffset);

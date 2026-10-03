@@ -1,19 +1,14 @@
 #pragma once
 
-#include "mesh.hpp"
-#include "primitives.hpp"
-
-struct RenderObject {
-  Eng::Mesh& mesh;
-  Eng::Transform transform; 
-};
+#include "scene.hpp"
 
 namespace Eng {
 
 class Renderer {
 public:
   Renderer();
-  void draw(const RenderObject& object);
+  void draw(const RenderObject& object, const Camera& camera);
+  void render(Scene& scene);
 };
 
 }

@@ -130,8 +130,7 @@ bool Shader::check_program_link_status(unsigned int program_id) {
 
 void Shader::bind() const { glUseProgram(_program_id); }
 
-void Shader::apply() const {
-  for(const auto& [name, value]: uniforms) {
+void Shader::update_uniform(std::string name, UniformValue value) const {
     std::visit([&](const auto& value) {
       using T = std::remove_cvref_t<decltype(value)>;
       if constexpr (std::is_same_v<T, int>) {
@@ -152,7 +151,6 @@ void Shader::apply() const {
         );
       }
     }, value);
-  }
 }
 
 void Shader::add_uniform(std::string name, UniformValue value) {
@@ -163,14 +161,20 @@ void Shader::add_uniform(Uniform u) {
   uniforms.emplace(std::move(u.name), std::move(u.value));
 }
 
+void Shader::apply_external_uniforms(const UniformMap external) const {
+  for(const auto& [name, value]: external)
+    update_uniform(name, value);
+}
+
+void Shader::apply_internal_uniforms() const {
+  for(const auto& [name, value] : uniforms)
+    update_uniform(name, value);
+}
+
 void Shader::patch_uniform(std::string name, UniformValue new_value) {
   uniforms.at(name) = new_value;
 }
 
-template <typename T>
-T Shader::get_uniform(std::string name) const {
-  return std::get<T>(uniforms.at(name));
-}
 
 int Shader::get_uniform_location(const char* name) const {
   return glGetUniformLocation(_program_id, name);

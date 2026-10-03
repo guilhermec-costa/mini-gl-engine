@@ -5,23 +5,15 @@ namespace Eng {
 
 Mesh::Mesh(const std::vector<float> &raw_data,
            const std::vector<unsigned int>& indices,
-           const std::vector<VertexAttribute> &attributes, size_t _vertex_count,
-           size_t stride, Material *_material)
-  : index_count(0), vertex_count(0) {
-  uint VBO, VAO, EBO;
-  glGenBuffers(1, &VBO);
+           const std::vector<VertexAttribute> &attributes, 
+           size_t vertex_count, size_t stride)
+  : index_count(indices.size()), vertex_count(vertex_count) {
+  glGenVertexArrays(1, &_VAO);
+  glGenBuffers(1, &_VBO);
 
-  if (!indices.empty()) {
-    index_count = indices.size();
-    glGenBuffers(1, &EBO);
-  }
-  glGenVertexArrays(1, &VAO);
+  glBindVertexArray(_VAO);
 
-  _VBO = VBO;
-  _VAO = VAO;
-
-  glBindVertexArray(VAO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBindBuffer(GL_ARRAY_BUFFER, _VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * raw_data.size(),
                raw_data.data(), GL_STATIC_DRAW);
 
@@ -32,31 +24,43 @@ Mesh::Mesh(const std::vector<float> &raw_data,
   }
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  if (index_count > 0) {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+  if(!indices.empty()) {
+    glGenBuffers(1, &_EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
+    glBufferData(
+      GL_ELEMENT_ARRAY_BUFFER, 
+      sizeof(unsigned int) * indices.size(), 
+      indices.data(), 
+      GL_STATIC_DRAW
+    );
   }
   glBindVertexArray(0);
-
-  vertex_count = _vertex_count;
-  material = _material;
 };
 
 Mesh::Mesh(Mesh &&other) noexcept
-    : _VAO(other._VAO), _VBO(other._VBO), vertex_count(other.vertex_count) {
+    : _VAO(other._VAO), _VBO(other._VBO), _EBO(other._EBO),
+      vertex_count(other.vertex_count), index_count(other.index_count) {
   other._VAO = 0;
   other._VBO = 0;
+  other._EBO = 0;
 }
 
 Mesh &Mesh::operator=(Mesh &&other) noexcept {
   if (this != &other) {
     glDeleteBuffers(1, &_VBO);
+    glDeleteBuffers(1, &_EBO);
     glDeleteVertexArrays(1, &_VAO);
 
     _VAO = other._VAO;
     _VBO = other._VBO;
+    _EBO = other._EBO;
+    vertex_count = other.vertex_count;
+    index_count = other.index_count;
     other._VAO = 0;
     other._VBO = 0;
+    other._EBO = 0;
+    other.vertex_count = 0;
+    other.index_count = 0;
   }
 
   return *this;
@@ -64,16 +68,13 @@ Mesh &Mesh::operator=(Mesh &&other) noexcept {
 
 Mesh::~Mesh() {
   glDeleteBuffers(1, &_VBO);
+  glDeleteBuffers(1, &_EBO);
   glDeleteVertexArrays(1, &_VAO);
 }
-
-Material *Mesh::get_material() const { return material; }
 
 size_t Mesh::get_vertex_count() const { return vertex_count; }
 size_t Mesh::get_index_count() const { return index_count; }
 
 unsigned int Mesh::get_VAO() const { return _VAO; }
-
-void Mesh::set_material(Material *m) { material = m; }
 
 } // namespace Eng
