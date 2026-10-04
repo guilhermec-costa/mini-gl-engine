@@ -12,6 +12,8 @@ std::filesystem::path shaderpath(const char *path);
 using UniformValue = std::variant<
   int, 
   float, 
+  glm::vec3,
+  glm::vec4,
   glm::mat4,
   EngTypes::Color>;
 
@@ -44,6 +46,7 @@ public:
   void patch_uniform(std::string name, UniformValue new_value);
   void set_uniformi(const char *name, int value) const;
   void set_uniformf(const char *name, float value) const;
+  void set_uniformv3f(const char* name, float v1, float v2, float v3) const;
   void set_uniformv4f(const char *name, float v1, float v2, float v3, float v4) const;
   void set_uniformmat4f(const char* name, glm::mat4 mat) const;
 

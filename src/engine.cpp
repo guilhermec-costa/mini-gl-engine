@@ -7,6 +7,7 @@
 #include "scenes/cube_scene.hpp"
 #include "meshes/cube_test.hpp"
 #include "scenes/geometry_scene.hpp"
+#include "scenes/light_scene.hpp"
 
 namespace Eng {
 Controller::Controller(Window *window, Renderer* renderer) 
@@ -71,9 +72,11 @@ void Controller::loop() {
   );
 
   auto cube_scene = CubeScene(_window, main_camera);
-  auto geometry_scene = GeometryScene(_window, main_camera);
-  scenes.push_back(&geometry_scene);
-  scenes.push_back(&cube_scene);
+  // auto geometry_scene = GeometryScene(_window, main_camera);
+  auto light_scene = LightScene(_window, main_camera);
+  // scenes.push_back(&geometry_scene);
+  // scenes.push_back(&cube_scene);
+  scenes.push_back(&light_scene);
 
   float delta_time = 0.0f, last_frame_time = 0.0f;
   while (!should_stop()) {

@@ -63,20 +63,33 @@ void Camera::update_zoom(double xoffset, double yoffset) {
 void Camera::move_front(float delta) {
   position += speed * front * delta;
 }
+
 void Camera::move_back(float delta) {
   position -= speed * front * delta;
 }
+
 void Camera::move_right(float delta) {
   position += glm::normalize(glm::cross(front, up)) * speed * delta;
 }
+
 void Camera::move_left(float delta) {
   position -= glm::normalize(glm::cross(front, up)) * speed * delta;
 }
+
 void Camera::move_up(float delta) {
   position.y += speed * delta; 
 }
+
 void Camera::move_down(float delta) {
   position.y -= speed * delta;
+}
+
+void Camera::speed_up() {
+  speed *= speed_up_factor;
+}
+
+void Camera::reset_speed() {
+  speed = initial_speed;
 }
 
 } // namespace Eng

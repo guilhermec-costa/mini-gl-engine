@@ -21,6 +21,8 @@ public:
   void move_left(float delta);
   void move_up(float delta);
   void move_down(float delta);
+  void speed_up();
+  void reset_speed();
 
 public:
   glm::vec3 position;
@@ -31,12 +33,16 @@ public:
   float aspect_ratio;
   float near_plane;
   float far_plane;
-  float speed = 4.0f;
+  float speed = 1.0f;
+  float initial_speed = 1.0f;
   float sensitivity = 0.01f;
 
 
   bool first_mouse = true;
   float yaw = -90.0f, pitch = 0.0f;
   float last_x = 0.0f, last_y = 0.0f;
+
+private:
+    float speed_up_factor = 2.0f;
 };
 } // namespace Eng
