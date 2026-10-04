@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include "shader.hpp"
+#include "glm/ext/vector_float4.hpp"
 #include <expected>
 #include <fstream>
 #include <iostream>
@@ -136,9 +137,21 @@ void Shader::update_uniform(std::string name, UniformValue value) const {
         set_uniformi(name.c_str(), value);
       } else if constexpr (std::is_same_v<T, float>) {
         set_uniformf(name.c_str(), value);
+      } else if constexpr (std::is_same_v<T, glm::vec3>) {
+        const glm::vec3& v = value;
+        set_uniformv3f(name.c_str(), v.x, v.y, v.z);
       } else if constexpr (std::is_same_v<T, glm::mat4>) {
         const glm::mat4& m = value;
         set_uniformmat4f(name.c_str(), m);
+      } else if constexpr(std::is_same_v<T, glm::vec4>) {
+        const glm::vec4& color = value;
+        set_uniformv4f(
+          name.c_str(),
+          color.r,
+          color.g,
+          color.b,
+          color.a
+        );
       } else if constexpr (std::is_same_v<T, EngTypes::Color>) {
         const EngTypes::Color& color = value;
         set_uniformv4f(
@@ -185,6 +198,10 @@ void Shader::set_uniformi(const char* name, int value) const {
 
 void Shader::set_uniformf(const char* name, float value) const {
   glUniform1f(get_uniform_location(name), value);
+}
+
+void Shader::set_uniformv3f(const char* name, float v1, float v2, float v3) const {
+  glUniform3f(get_uniform_location(name), v1, v2, v3);
 }
 
 void Shader::set_uniformv4f(const char * name, float v1, float v2, float v3, float v4) const {
