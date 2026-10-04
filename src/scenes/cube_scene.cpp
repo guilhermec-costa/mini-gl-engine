@@ -18,7 +18,7 @@ CubeScene::CubeScene(Eng::Window* window, Eng::Camera& camera) : Eng::Scene(came
   }
   texture_shader = std::make_unique<Eng::Shader>(std::move(*_texture_shader));
   texture = Eng::Texture2D(albedopath("wood.jpg").c_str(), GL_RGB, GL_RGB);
-  cube_material = std::make_unique<Eng::Material>(Eng::Material(*texture_shader, texture));
+  cube_material = std::make_unique<Eng::Material>(*texture_shader, texture);
   cube_mesh = make_cube(cube_test_mesh);
   cube = Eng::RenderObject(&cube_mesh, cube_material.get());
 
@@ -31,7 +31,7 @@ CubeScene::CubeScene(Eng::Window* window, Eng::Camera& camera) : Eng::Scene(came
     return;
   }
   color_shader = std::make_unique<Eng::Shader>(std::move(*_color_shader));
-  triangle_material = std::make_unique<Eng::Material>(Eng::Material(*color_shader));
+  triangle_material = std::make_unique<Eng::Material>(*color_shader);
   triangle_mesh = make_triangle(
       glm::vec3(0.8f,  0.5f, -0.8f),
       glm::vec3(1.0f, -0.5f, -0.8f),

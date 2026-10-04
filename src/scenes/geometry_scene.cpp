@@ -69,26 +69,14 @@ GeometryScene::GeometryScene(Eng::Window *window, Eng::Camera &camera)
   objects.push_back(&quad_right);
 }
 
-void GeometryScene::prepare_render() {
-  color_shader->patch_uniform("projection", camera.projection_matrix());
-
-  color_shader->patch_uniform("view", camera.view_matrix());
-}
+void GeometryScene::prepare_render() {}
 
 void GeometryScene::update(float delta) {
   const float time = static_cast<float>(glfwGetTime());
 
-  // Triângulos girando em velocidades diferentes
-
   triangle_left.transform.set_rotate(time * 40.0f, {0.0f, 0.0f, 1.0f});
-
   triangle_center.transform.set_rotate(time * -70.0f, {0.0f, 0.0f, 1.0f});
-
   triangle_right.transform.set_rotate(time * 100.0f, {0.0f, 0.0f, 1.0f});
-
-  // Quads girando em 3D
-
   quad_left.transform.set_rotate(time * 50.0f, {1.0f, 0.3f, 0.0f});
-
   quad_right.transform.set_rotate(time * -60.0f, {0.3f, 1.0f, 0.0f});
 }

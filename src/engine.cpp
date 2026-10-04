@@ -40,7 +40,7 @@ void Controller::process_mouse_wheel(GLFWwindow* window, double xoffset, double 
 }
 
 void Controller::render() {
-  _window->clear({0.0f, 50.0f, 128.f, 1.0f});
+  _window->clear({0.0f, 0.0f, 0.0f, 1.0f});
   for(Scene* scene : scenes) {
     _renderer->render(*scene);
   }
