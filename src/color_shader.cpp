@@ -11,11 +11,11 @@ ColorShader::ColorShader(unsigned int program_id)
 ColorShader::ColorShader(unsigned int program_id, EngTypes::Color color)
     : Shader(program_id), color(color) {};
 
-std::expected<ColorShader, const char *>
+std::expected<ColorShader, std::string>
 ColorShader::create_color_shader(const char *frag_path,
                                  std::optional<EngTypes::Color> color) {
 
-  std::filesystem::path vp = shaderpath("default_vertex.glsl");
+  std::filesystem::path vp = shaderpath("vertex.glsl");
   const char *vertex_path = vp.c_str();
 
   std::ifstream vertexstream(vertex_path), fragstream(frag_path);
@@ -41,7 +41,7 @@ ColorShader::create_color_shader(const char *frag_path,
 
   if (!Shader::check_compilation(vertex_shader)) {
     glDeleteShader(vertex_shader);
-    return std::unexpected("failed to compile vertex shader");
+    return std::unexpected(std::string("failed to compile vertex shader") + vertex_path);
   }
 
   fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -50,7 +50,7 @@ ColorShader::create_color_shader(const char *frag_path,
 
   if (!Shader::check_compilation(fragment_shader)) {
     glDeleteShader(fragment_shader);
-    return std::unexpected("failed to compile fragment shader");
+    return std::unexpected(std::string("failed to compile fragment shader") + frag_path);
   }
 
   unsigned int ID = glCreateProgram();

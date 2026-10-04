@@ -84,6 +84,20 @@ Eng::Mesh make_cube(const std::vector<float>& data) {
       Eng::VertexAttribute(0, 3, 0),
       Eng::VertexAttribute(1, 2, sizeof(float) * 3)
     },
-    data.size(),
+    data.size() / 5,
     sizeof(float) * 5);
+}
+
+Eng::Mesh make_cube_with_normals(const std::vector<float>& data) {
+  return Eng::Mesh(
+    data,
+    {},
+    std::vector{
+      Eng::VertexAttribute{0, 3, 0},
+      Eng::VertexAttribute{1, 2, sizeof(float) * 3},
+      Eng::VertexAttribute{2, 3, sizeof(float) * 5},
+    },
+    data.size() / 8,
+    sizeof(float) * 8
+  );
 }

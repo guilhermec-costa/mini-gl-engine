@@ -184,7 +184,7 @@ void Shader::apply_internal_uniforms() const {
 }
 
 void Shader::patch_uniform(std::string name, UniformValue new_value) {
-  uniforms.at(name) = new_value;
+  uniforms[name] = std::move(new_value);
 }
 
 
