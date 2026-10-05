@@ -75,7 +75,7 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   cube5_material->patch_uniform("object_color",
                                 glm::vec4{0.8f, 0.1f, 1.0f, 1.0f}); // roxo
 
-  glm::vec3 light_color(1.0f, 1.0f, 1.0f);
+  glm::vec3 light_color(0.5f, 0.2f, 0.1f);
   light_source_material->patch_uniform("color", glm::vec4{light_color, 1.0f});
   cube_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
   cube2_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
@@ -96,5 +96,5 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
 void LightScene::prepare_render() {}
 
 void LightScene::update(float delta) {
-  // cube.transform.set_rotate(glfwGetTime() * 60, {0.4f, 1.0f, 0.0f});
+  cube.transform.set_rotate(glfwGetTime() * 60, {0.4f, 1.0f, 0.0f});
 }

@@ -14,12 +14,12 @@ public:
   Material(Shader& shader, Texture2D& albedo): shader(shader), albedo(&albedo) {};
   void bind();
   void set_albedo(Texture2D& albedo);
-  void add_uniform(Uniform u);
   void patch_uniform(std::string name, UniformValue new_value);
 
 public:
   EngTypes::Color color;
   Shader& shader;
+  glm::vec3 ambient_light;
   Texture2D* albedo = nullptr;
   UniformMap uniforms;
 

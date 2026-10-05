@@ -39,7 +39,8 @@ int main(int argc, char* argv[]) {
 
   glViewport(0, 0, window.width, window.height);
   Eng::Renderer renderer = Eng::Renderer();
-  Eng::Controller ctrl = Eng::Controller(&window, &renderer);
+  Eng::Input input_handler = Eng::Input();
+  Eng::Controller ctrl = Eng::Controller(&window, &renderer, &input_handler);
   ctrl.loop();
   return EXIT_SUCCESS;
 }

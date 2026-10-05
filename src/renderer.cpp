@@ -6,7 +6,7 @@ namespace Eng {
 
 Renderer::Renderer() {
   glEnable(GL_DEPTH_TEST);
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glLineWidth(2.0f);
 }
 
 void Renderer::draw(const RenderObject& object, const Camera& camera) {
