@@ -3,6 +3,7 @@
 in vec3 normal;
 in vec3 frag_pos;
 
+float ambient_strength;
 uniform vec4 object_color;
 uniform vec4 light_color;
 uniform vec3 light_pos;
