@@ -15,6 +15,9 @@ public:
   void bind();
   void set_albedo(Texture2D& albedo);
   void patch_uniform(std::string name, UniformValue new_value);
+  void set_specular_strength(float strength);
+  void set_ambient_strength(float strength);
+  void set_color(glm::vec4 color);
 
 public:
   EngTypes::Color color;
@@ -24,6 +27,8 @@ public:
   UniformMap uniforms;
 
 private:
+  float specular_strength;
+  float ambient_strength;
   Material();
 };
 }
