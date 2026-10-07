@@ -17,6 +17,7 @@ private:
   Eng::Texture2D wood_texture;
   Eng::Texture2D wall_texture;
   Eng::Mesh cube_mesh;
+  Eng::Mesh sphere_mesh;
 
   // Materials
   std::unique_ptr<Eng::Material> cube_material;
@@ -24,6 +25,7 @@ private:
   std::unique_ptr<Eng::Material> cube3_material;
   std::unique_ptr<Eng::Material> cube4_material;
   std::unique_ptr<Eng::Material> cube5_material;
+  std::unique_ptr<Eng::Material> sphere_material;
   std::unique_ptr<Eng::Material> light_source_material;
 
   // Objects
@@ -32,5 +34,6 @@ private:
   Eng::RenderObject cube3;
   Eng::RenderObject cube4;
   Eng::RenderObject cube5;
+  Eng::RenderObject sphere;
   Eng::RenderObject light_source;
 };

@@ -30,3 +30,4 @@ Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 v4);
 Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
 Eng::Mesh make_cube(const std::vector<float>& data);
 Eng::Mesh make_cube_with_normals(const std::vector<float>& data);
+Eng::Mesh make_sphere(float radius, int stacks, int sectors);
