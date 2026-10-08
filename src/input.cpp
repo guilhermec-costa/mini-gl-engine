@@ -40,4 +40,5 @@ bool Input::key_released(int key) const {
 
   return prev == GLFW_PRESS && current_it->second == GLFW_RELEASE;
 }
+
 } // namespace Eng

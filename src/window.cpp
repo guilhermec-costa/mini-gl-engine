@@ -19,6 +19,14 @@ Window::Window(uint16_t w, uint16_t h, const char *title)
   }
 }
 
+Window::~Window() {
+  glfwDestroyWindow(_window);
+}
+
+void Window::close() {
+  glfwSetWindowShouldClose(_window, GLFW_TRUE);
+}
+
 float Window::aspect_ratio() const {
   return static_cast<float>(width) / static_cast<float>(height);
 }
