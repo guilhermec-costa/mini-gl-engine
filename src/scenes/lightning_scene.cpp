@@ -1,3 +1,4 @@
+#include <cmath>
 #include <glad/glad.h>
 #include "color_shader.hpp"
 #include "material.hpp"
@@ -7,6 +8,7 @@
 #include "scenes/light_scene.hpp"
 #include "shader.hpp"
 #include <iostream>
+#include <ostream>
 
 LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
     : Eng::Scene(camera) {
@@ -63,8 +65,8 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   sphere.transform.set_scale({1.f, 1.f, 1.f});
 
   light_source_material = std::make_unique<Eng::Material>(*light_source_shader);
-  light_source = Eng::RenderObject(&cube_mesh, light_source_material.get());
-  light_source.transform.set_position({0.6f, 0.3f, 1.0f});
+  light_source = Eng::RenderObject(&sphere_mesh, light_source_material.get());
+  light_source.transform.set_position({0.8f, 0.8f, 1.0f});
   light_source.transform.set_scale({0.15f, 0.15f, 0.15f});
 
   cube_material->set_color(glm::vec4{1.0f, 0.1f, 0.1f, 1.0f});
@@ -74,7 +76,7 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   cube5_material->set_color(glm::vec4{0.8f, 0.1f, 1.0f, 1.0f});
   sphere_material->set_color(glm::vec4{0.5f, 0.7f, 0.3f, 1.0f});
 
-  glm::vec3 light_color(0.9f, 0.2f, 0.3f);
+  glm::vec3 light_color(1.0f, 1.0f, 1.0f);
   light_source_material->patch_uniform("color", glm::vec4{light_color, 1.0f});
 
   cube_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
@@ -101,5 +103,24 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
 void LightScene::prepare_render() {}
 
 void LightScene::update(float delta) {
-  cube.transform.set_rotate(glfwGetTime() * 60, {0.4f, 1.0f, 0.0f});
+  float time = glfwGetTime();
+  cube.transform.set_rotate(time * 60, {0.4f, 1.0f, 0.0f});
+  light_source.transform.set_rotate(time * 90,{0.4f, 1.0f, 0.0f});
+
+  glm::vec3 light_pos = {
+    sinf(time) * 2.5f,
+    1.0f,
+    cosf(time) * 2.5f
+  };
+
+  light_source.transform.set_position(light_pos);
+  box_shader->patch_uniform("light_pos", light_pos);
+
+  glm::vec3 color(glm::clamp((float)(sin(time)), 0.f, 255.f), .5f, 1.0f);
+  light_source_material->patch_uniform("color", glm::vec4{color, 1.0f});
+  cube2_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
+  cube3_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
+  cube4_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
+  cube5_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
+
 }

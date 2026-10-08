@@ -24,16 +24,18 @@ private:
     int action,
     int mods
   );
-
-private:
-  GLenum polygon_mode = GL_FILL;
   bool should_stop() const;
   void process_input(float delta_time);
   static void process_mouse_input(GLFWwindow* window, double xpos, double ypos);
   static void process_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset);
+  void toggle_cursor_captured();
   void update(float delta);
   void render();
+
+private:
+  GLenum polygon_mode = GL_FILL;
   bool quit_app = false;
+  bool cursor_captured = false;
   Window *_window = nullptr;
   Renderer *_renderer = nullptr;
   Input* _input = nullptr;

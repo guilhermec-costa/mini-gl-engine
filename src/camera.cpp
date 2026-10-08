@@ -1,13 +1,14 @@
 #include "camera.hpp"
+#include "GLFW/glfw3.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
 namespace Eng {
 
-Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 up, 
+Camera::Camera(Input* input, glm::vec3 position, glm::vec3 target, glm::vec3 up, 
               float initial_x, float initial_y, 
               float fov, float aspect_ratio, float near_plane, float far_plane)
-    : position(position), front(glm::normalize(target - position)), up(up),
+    : _input(input), position(position), front(glm::normalize(target - position)), up(up),
       last_x(initial_x), last_y(initial_y),
       fov(fov), aspect_ratio(aspect_ratio), near_plane(near_plane), far_plane(far_plane) {
 }
@@ -57,6 +58,23 @@ void Camera::update_zoom(double xoffset, double yoffset) {
   }
   if(fov > 45.0f) {
     fov = 45.0f;
+  }
+}
+
+void Camera::process_input(float delta) {
+  if(_input->key_down(GLFW_KEY_W)) move_front(delta);
+  if(_input->key_down(GLFW_KEY_S)) move_back(delta);
+  if(_input->key_down(GLFW_KEY_A)) move_left(delta);
+  if(_input->key_down(GLFW_KEY_D)) move_right(delta);
+  if(_input->key_down(GLFW_KEY_E)) move_up(delta);
+  if(_input->key_down(GLFW_KEY_Q)) move_down(delta);
+
+  if(_input->key_down(GLFW_KEY_LEFT_SHIFT) && !sprinting)  {
+    sprinting = true;
+    speed_up();
+  } else if(sprinting){
+    sprinting = false;
+    reset_speed();
   }
 }
 

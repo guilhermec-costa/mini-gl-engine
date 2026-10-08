@@ -3,7 +3,6 @@
 #include <numbers>
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float2.hpp"
-#include "material.hpp"
 #include "mesh.hpp"
 
 namespace Eng {
@@ -206,4 +205,9 @@ Eng::Mesh make_sphere(float radius, int stack_count, int sector_count) {
     raw_data.size() / 8,
     sizeof(float) * 8
   );
+}
+
+std::ostream& operator<<(std::ostream& os, glm::vec3 v) {
+  os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+  return os;
 }

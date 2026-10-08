@@ -1,6 +1,9 @@
 #include "engine.hpp"
 #include "GLFW/glfw3.h"
 #include "camera.hpp"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "input.hpp"
 #include "renderer.hpp"
 #include "scene.hpp"
@@ -17,16 +20,18 @@ bool Controller::should_stop() const {
 };
 
 void Controller::process_input(float delta_time) {
-  GLFWwindow* window = _window->unwrap();
   if(_input->key_pressed(GLFW_KEY_ESCAPE)) {
-    quit_app = true;
+    toggle_cursor_captured();
+    glfwSetInputMode(
+      _window->unwrap(), 
+      GLFW_CURSOR, 
+      cursor_captured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
+    );
   }
-  if(_input->key_down(GLFW_KEY_W)) main_camera.move_front(delta_time);
-  if(_input->key_down(GLFW_KEY_S)) main_camera.move_back(delta_time);
-  if(_input->key_down(GLFW_KEY_A)) main_camera.move_left(delta_time);
-  if(_input->key_down(GLFW_KEY_D)) main_camera.move_right(delta_time);
-  if(_input->key_down(GLFW_KEY_E)) main_camera.move_up(delta_time);
-  if(_input->key_down(GLFW_KEY_Q)) main_camera.move_down(delta_time);
+
+  if(cursor_captured) {
+    main_camera.process_input(delta_time);
+  }
 
   if(_input->key_pressed(GLFW_KEY_TAB)) {
     polygon_mode = polygon_mode == GL_FILL ? GL_LINE : GL_FILL;
@@ -44,12 +49,15 @@ void Controller::process_mouse_wheel(GLFWwindow* window, double xoffset, double 
   controller->main_camera.update_zoom(xoffset, yoffset);
 }
 
+void Controller::toggle_cursor_captured() {
+  cursor_captured = !cursor_captured;
+}
+
 void Controller::render() {
-  _window->clear({0.0f, 0.0f, 0.0f, 1.0f});
+  _window->clear({1.0f, 1.0f, 1.0f, 1.0f});
   for(Scene* scene : scenes) {
     _renderer->render(*scene);
   }
-  glfwSwapBuffers(_window->unwrap());
 }
 
 void Controller::update(float delta) {
@@ -77,6 +85,7 @@ void Controller::loop() {
   glfwSetKeyCallback(_window->unwrap(), Controller::key_callback);
   
   main_camera = Eng::Camera(
+    _input,
     glm::vec3(0.0f, 0.0f, 3.0f), 
     glm::vec3(0.0f, 0.0f, 0.0f), 
     glm::vec3(0.0f, 1.0f, 0.0f),
@@ -88,22 +97,37 @@ void Controller::loop() {
   );
 
   auto cube_scene = CubeScene(_window, main_camera);
-  // auto geometry_scene = GeometryScene(_window, main_camera);
   auto light_scene = LightScene(_window, main_camera);
+  // auto geometry_scene = GeometryScene(_window, main_camera);
   // scenes.push_back(&geometry_scene);
   // scenes.push_back(&cube_scene);
+
   scenes.push_back(&light_scene);
 
   float delta_time = 0.0f, last_frame_time = 0.0f;
   while (!should_stop()) {
     glfwPollEvents();
 
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("Hello window");
+    ImGui::Text("Delta time: %.4f", delta_time);
+    ImGui::End();
     const float frame_time = glfwGetTime();
     delta_time = frame_time - last_frame_time;
     last_frame_time = frame_time;
     process_input(delta_time);
     update(delta_time);
+
     render();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    glfwSwapBuffers(_window->unwrap());
+
     _input->update();
   }
 }

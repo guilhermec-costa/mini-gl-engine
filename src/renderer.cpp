@@ -7,6 +7,7 @@ namespace Eng {
 Renderer::Renderer() {
   glEnable(GL_DEPTH_TEST);
   glLineWidth(2.0f);
+  glPointSize(3.0f);
 }
 
 void Renderer::draw(const RenderObject& object, const Camera& camera) {
