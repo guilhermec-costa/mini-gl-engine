@@ -115,12 +115,4 @@ void LightScene::update(float delta) {
 
   light_source.transform.set_position(light_pos);
   box_shader->patch_uniform("light_pos", light_pos);
-
-  glm::vec3 color(glm::clamp((float)(sin(time)), 0.f, 255.f), .5f, 1.0f);
-  light_source_material->patch_uniform("color", glm::vec4{color, 1.0f});
-  cube2_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
-  cube3_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
-  cube4_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
-  cube5_material->patch_uniform("light_color", glm::vec4{color, 1.0f});
-
 }

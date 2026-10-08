@@ -22,9 +22,12 @@ void Renderer::draw(const RenderObject& object, const Camera& camera) {
   glBindVertexArray(object.mesh->get_VAO());
   if(object.mesh->get_index_count() > 0) {
     glDrawElements(GL_TRIANGLES, object.mesh->get_index_count(), GL_UNSIGNED_INT, nullptr);
+    triangle_count += object.mesh->get_index_count() / 3;
   } else {
     glDrawArrays(GL_TRIANGLES, 0, object.mesh->get_vertex_count());
+    triangle_count += object.mesh->get_vertex_count() / 3;
   }
+  draw_call_count++;
 
   unsigned int error = glGetError();
   if (error) {
@@ -37,5 +40,17 @@ void Renderer::render(Scene& scene) {
   for(RenderObject* o : scene.objects) {
     draw(*o, scene.camera);
   } 
+}
+
+void Renderer::reset_stats() {
+  triangle_count = 0;
+  draw_call_count = 0;
+}
+
+int Renderer::get_triangle() const {
+  return triangle_count;
+}
+int Renderer::get_draw_call_count() const {
+  return draw_call_count;
 }
 }
