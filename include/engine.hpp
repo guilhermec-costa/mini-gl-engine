@@ -34,8 +34,7 @@ private:
 
 private:
   GLenum polygon_mode = GL_FILL;
-  bool quit_app = false;
-  bool cursor_captured = false;
+  bool cursor_captured = true;
   Window *_window = nullptr;
   Renderer *_renderer = nullptr;
   Input* _input = nullptr;

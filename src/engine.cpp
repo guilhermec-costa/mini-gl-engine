@@ -10,13 +10,20 @@
 #include "scenes/cube_scene.hpp"
 #include "meshes/cube_test.hpp"
 #include "scenes/light_scene.hpp"
+#include <chrono>
+#include <thread>
 
 namespace Eng {
+
+inline void sleep(double seconds) {
+  std::this_thread::sleep_for(std::chrono::duration<double>(seconds));
+}
+
 Controller::Controller(Window *window, Renderer* renderer, Input* input_handler) 
   : _window(window), _renderer(renderer), _input(input_handler) {};
 
 bool Controller::should_stop() const {
-  return glfwWindowShouldClose(_window->unwrap()) || quit_app;
+  return glfwWindowShouldClose(_window->unwrap());
 };
 
 void Controller::process_input(float delta_time) {
@@ -54,7 +61,8 @@ void Controller::toggle_cursor_captured() {
 }
 
 void Controller::render() {
-  _window->clear({1.0f, 1.0f, 1.0f, 1.0f});
+  _renderer->reset_stats();
+  _window->clear({0.1f, 0.1f, 0.2f, 1.0f});
   for(Scene* scene : scenes) {
     _renderer->render(*scene);
   }
@@ -104,31 +112,44 @@ void Controller::loop() {
 
   scenes.push_back(&light_scene);
 
-  float delta_time = 0.0f, last_frame_time = 0.0f;
+  const float TARGET_FPS = 120;
+  const float TARGET_DELTA_TIME = 1.0 / TARGET_FPS;
+  double last_frame_time = glfwGetTime();
   while (!should_stop()) {
+    double frame_start = glfwGetTime();
+    double delta_time = frame_start - last_frame_time;
+    last_frame_time = frame_start;
+
     glfwPollEvents();
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("Hello window");
+    ImGui::Begin("Debug");
     ImGui::Text("Delta time: %.4f", delta_time);
+    ImGui::Text("Triangles: %d", _renderer->get_triangle());
+    ImGui::Text("Draw calls: %d", _renderer->get_draw_call_count());
+    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     ImGui::End();
-    const float frame_time = glfwGetTime();
-    delta_time = frame_time - last_frame_time;
-    last_frame_time = frame_time;
+
+
+    const float current_fps = 1.0 / delta_time;
+
     process_input(delta_time);
     update(delta_time);
-
     render();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     glfwSwapBuffers(_window->unwrap());
-
     _input->update();
+    
+    double frame_elapsed = glfwGetTime() - frame_start;
+    if(frame_elapsed < TARGET_DELTA_TIME) {
+      sleep(TARGET_DELTA_TIME - frame_elapsed);
+    }
   }
 }
 } // namespace Eng
