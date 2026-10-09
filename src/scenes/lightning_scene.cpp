@@ -65,30 +65,47 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   sphere.transform.set_scale({1.f, 1.f, 1.f});
 
   light_source_material = std::make_unique<Eng::Material>(*light_source_shader);
-  light_source = Eng::RenderObject(&sphere_mesh, light_source_material.get());
-  light_source.transform.set_position({0.8f, 0.8f, 1.0f});
-  light_source.transform.set_scale({0.15f, 0.15f, 0.15f});
+  light = Eng::Light(&sphere_mesh, light_source_material.get());
+  light.transform.set_position({0.8f, 0.8f, 1.0f});
+  light.transform.set_scale({0.15f, 0.15f, 0.15f});
+  light.ambient = {0.2f, 0.5f, 1.0f};
+  light.diffuse  = {1.0f, 0.5f, 1.0f};
+  light.specular = {1.0f, 0.5f, 1.0f};
+  
 
-  cube_material->set_color(glm::vec4{1.0f, 0.1f, 0.1f, 1.0f});
-  cube2_material->set_color(glm::vec4{0.1f, 1.0f, 0.1f, 1.0f});
-  cube3_material->set_color(glm::vec4{0.1f, 0.1f, 1.0f, 1.0f});
-  cube4_material->set_color(glm::vec4{1.0f, 0.8f, 0.1f, 1.0f});
-  cube5_material->set_color(glm::vec4{0.8f, 0.1f, 1.0f, 1.0f});
-  sphere_material->set_color(glm::vec4{0.5f, 0.7f, 0.3f, 1.0f});
+  light_source_material->patch_uniform("color", light.ambient);
 
-  glm::vec3 light_color(1.0f, 1.0f, 1.0f);
-  light_source_material->patch_uniform("color", glm::vec4{light_color, 1.0f});
+  cube_material->set_light(light);
+  cube_material->set_specular({0.6f, 0.6f, 0.6f});
+  cube_material->set_ambient({1.0f, 0.1f, 0.1f});
+  cube_material->set_diffuse({0.8f, 0.2f, 0.2f});
+  cube_material->set_shininess(32.0f);
 
-  cube_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
-  cube_material->set_specular_strength(0.6f);
-  cube_material->set_ambient_strength(0.2);
+  cube2_material->set_light(light);
+  cube2_material->set_specular({0.6f, 0.6f, 0.6f});
+  cube2_material->set_ambient({0.1f, 1.0f, 0.1f});
+  cube2_material->set_diffuse({0.2f, 0.8f, 0.2f});
+  cube2_material->set_shininess(32.0f);
 
-  cube2_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
-  cube3_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
-  cube4_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
-  cube5_material->patch_uniform("light_color", glm::vec4{light_color, 1.0f});
+  cube3_material->set_light(light);
+  cube3_material->set_specular({0.6f, 0.6f, 0.6f});
+  cube3_material->set_ambient({0.1f, 0.1f, 1.0f});
+  cube3_material->set_diffuse({0.2f, 0.2f, 0.8f});
+  cube3_material->set_shininess(32.0f);
 
-  box_shader->patch_uniform("light_pos", light_source.transform.position);
+  cube4_material->set_light(light);
+  cube4_material->set_specular({0.6f, 0.6f, 0.6f});
+  cube4_material->set_ambient({1.0f, 0.7f, 0.1f});
+  cube4_material->set_diffuse({0.9f, 0.5f, 0.1f});
+  cube4_material->set_shininess(32.0f);
+
+  cube5_material->set_light(light);
+  cube5_material->set_specular({0.6f, 0.6f, 0.6f});
+  cube5_material->set_ambient({0.8f, 0.1f, 1.0f});
+  cube5_material->set_diffuse({0.6f, 0.2f, 0.9f});
+  cube5_material->set_shininess(32.0f); 
+
+  box_shader->patch_uniform("light_pos", light.transform.position);
   box_shader->patch_uniform("view_pos", camera.position);
 
   objects.push_back(&cube);
@@ -97,7 +114,7 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   objects.push_back(&cube4);
   objects.push_back(&cube5);
   objects.push_back(&sphere);
-  objects.push_back(&light_source);
+  objects.push_back(&light);
 }
 
 void LightScene::prepare_render() {}
@@ -105,14 +122,17 @@ void LightScene::prepare_render() {}
 void LightScene::update(float delta) {
   float time = glfwGetTime();
   cube.transform.set_rotate(time * 60, {0.4f, 1.0f, 0.0f});
-  light_source.transform.set_rotate(time * 90,{0.4f, 1.0f, 0.0f});
+  light.transform.set_rotate(time * 90,{0.4f, 1.0f, 0.0f});
+
+  float speed = 6.0f;
+  float radius = 2.5f;
 
   glm::vec3 light_pos = {
-    sinf(time) * 2.5f,
-    1.0f,
-    cosf(time) * 2.5f
+      sinf(time * speed) * radius,
+      1.0f,
+      cosf(time * speed) * radius
   };
 
-  light_source.transform.set_position(light_pos);
-  box_shader->patch_uniform("light_pos", light_pos);
+  light.transform.set_position(light_pos);
+  box_shader->patch_uniform("light.position", light_pos);
 }

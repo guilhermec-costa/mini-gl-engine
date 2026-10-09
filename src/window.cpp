@@ -30,8 +30,9 @@ void Window::close() {
 float Window::aspect_ratio() const {
   return static_cast<float>(width) / static_cast<float>(height);
 }
-void Window::clear(const EngTypes::Color color) const {
-  glClearColor(color.r, color.g, color.b, color.a);
+
+void Window::clear() const {
+  glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 } // namespace Eng

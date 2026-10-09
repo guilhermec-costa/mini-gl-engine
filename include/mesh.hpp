@@ -1,11 +1,12 @@
 #pragma once
 
-#include "material.hpp"
 #include <cstddef>
 #include <sys/types.h>
 #include <vector>
 
 namespace Eng {
+
+class Material;
 
 class VertexAttribute {
 public:
