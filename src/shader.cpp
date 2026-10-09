@@ -192,23 +192,34 @@ int Shader::get_uniform_location(const char* name) const {
   return glGetUniformLocation(_program_id, name);
 }
 
+static void print_uniform_set_error(std::string uniform_type, const char* name) {
+  GLenum err = glGetError();
+  if (err) std::cout << "err " << err << " to set " << std::string(uniform_type) <<  " uniform: " << name << "\n";
+}
+
 void Shader::set_uniformi(const char* name, int value) const {
   glUniform1i(get_uniform_location(name), value);
+  print_uniform_set_error("i", name);
 }
 
 void Shader::set_uniformf(const char* name, float value) const {
   glUniform1f(get_uniform_location(name), value);
+  print_uniform_set_error("f", name);
 }
 
 void Shader::set_uniformv3f(const char* name, float v1, float v2, float v3) const {
   glUniform3f(get_uniform_location(name), v1, v2, v3);
+  print_uniform_set_error("3f", name);
 }
 
 void Shader::set_uniformv4f(const char * name, float v1, float v2, float v3, float v4) const {
   glUniform4f(get_uniform_location(name), v1, v2, v3, v4);
+  print_uniform_set_error("4f", name);
 }
 
 void Shader::set_uniformmat4f(const char* name, const glm::mat4 mat) const {
   glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(mat));
+  print_uniform_set_error("mat4f", name);
 }
+
 } // namespace Eng

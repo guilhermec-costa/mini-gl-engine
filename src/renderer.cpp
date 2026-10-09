@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "renderer.hpp"
+#include "material.hpp"
 
 namespace Eng {
 

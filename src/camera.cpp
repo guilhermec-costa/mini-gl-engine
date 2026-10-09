@@ -22,6 +22,11 @@ glm::mat4 Camera::projection_matrix() const {
                             far_plane);
 }
 
+void Camera::record_mouse_pos(double xpos, double ypos) {
+  last_x = xpos;
+  last_y = ypos;
+}
+
 void Camera::update_direction(double xpos, double ypos) {
   if(first_mouse) {
     last_x = xpos;

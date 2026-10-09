@@ -36,9 +36,7 @@ void Controller::process_input(float delta_time) {
     );
   }
 
-  if(cursor_captured) {
-    main_camera.process_input(delta_time);
-  }
+  main_camera.process_input(delta_time);
 
   if(_input->key_pressed(GLFW_KEY_TAB)) {
     polygon_mode = polygon_mode == GL_FILL ? GL_LINE : GL_FILL;
@@ -48,7 +46,11 @@ void Controller::process_input(float delta_time) {
 
 void Controller::process_mouse_input(GLFWwindow* window, double xpos, double ypos) {
   Controller* controller = static_cast<Controller*>(glfwGetWindowUserPointer(window));
-  controller->main_camera.update_direction(xpos, ypos);
+  if(controller->cursor_captured) {
+    controller->main_camera.update_direction(xpos, ypos);
+  } else {
+    controller->main_camera.record_mouse_pos(xpos, ypos);
+  }
 };
 
 void Controller::process_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset) {
@@ -62,7 +64,7 @@ void Controller::toggle_cursor_captured() {
 
 void Controller::render() {
   _renderer->reset_stats();
-  _window->clear({0.1f, 0.1f, 0.2f, 1.0f});
+  _window->clear();
   for(Scene* scene : scenes) {
     _renderer->render(*scene);
   }

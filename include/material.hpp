@@ -1,5 +1,6 @@
 #pragma once
 
+#include "render_object.hpp"
 #include "texture2d.hpp"
 #include "shader.hpp"
 #include "types.hpp"
@@ -15,9 +16,11 @@ public:
   void bind();
   void set_albedo(Texture2D& albedo);
   void patch_uniform(std::string name, UniformValue new_value);
-  void set_specular_strength(float strength);
-  void set_ambient_strength(float strength);
-  void set_color(glm::vec4 color);
+  void set_ambient(const glm::vec3 ambient);
+  void set_diffuse(const glm::vec3 diffuse);
+  void set_specular(const glm::vec3 specular);
+  void set_shininess(const float shininess);
+  void set_light(const Light& light);
 
 public:
   EngTypes::Color color;

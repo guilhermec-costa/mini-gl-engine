@@ -35,5 +35,5 @@ private:
   Eng::RenderObject cube4;
   Eng::RenderObject cube5;
   Eng::RenderObject sphere;
-  Eng::RenderObject light_source;
+  Eng::Light light;
 };

@@ -16,6 +16,7 @@ public:
 
   void process_input(float delta);
   void update_direction(double xpos, double ypos);
+  void record_mouse_pos(double xpos, double ypos);
   void update_zoom(double xoffset, double yoffset);
   void move_front(float delta);
   void move_back(float delta);

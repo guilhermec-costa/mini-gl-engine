@@ -1,23 +1,9 @@
 #pragma once
 
-#include <vector>
 #include "camera.hpp"
-#include "material.hpp"
-#include "mesh.hpp"
-#include "primitives.hpp"
+#include "render_object.hpp"
 
 namespace Eng {
-
-class RenderObject {
-public:
-  RenderObject() = default;
-  RenderObject(Mesh* mesh, Material* material)
-    : mesh(mesh), material(material) {}
-
-  Eng::Mesh* mesh;
-  Eng::Material* material;
-  Eng::Transform transform; 
-};
 
 class Scene {
 public:
