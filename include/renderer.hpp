@@ -1,8 +1,15 @@
 #pragma once
 
 #include "scene.hpp"
+#include <GL/gl.h>
 
 namespace Eng {
+
+struct RenderMetadata {
+  const GLubyte* gpu_model;
+  const GLubyte* vendor;
+  const GLubyte* version;
+};
 
 class Renderer {
 public:
@@ -12,6 +19,7 @@ public:
   void reset_stats();
   int get_triangle() const;
   int get_draw_call_count() const;
+  RenderMetadata get_metadata() const;
 
 private:
   int triangle_count = 0;

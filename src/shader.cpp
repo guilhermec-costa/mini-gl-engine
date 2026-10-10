@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include "shader.hpp"
 #include "glm/ext/vector_float4.hpp"
 #include <expected>

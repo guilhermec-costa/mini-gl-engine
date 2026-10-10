@@ -1,5 +1,5 @@
 #include <cmath>
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include "color_shader.hpp"
 #include "macros.hpp"
 #include "material.hpp"
@@ -144,5 +144,6 @@ void LightScene::update(float delta) {
   cube3_material->set_light(light);
   cube4_material->set_light(light);
   cube5_material->set_light(light);
+  sphere.transform.set_rotate(time * 60, {0.0f, 1.0f, 0.0f});
   box_shader->patch_uniform("light.position", light_pos);
 }

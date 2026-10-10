@@ -1,6 +1,6 @@
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include "texture2d.hpp"
-#include "stb/stb_image.h"
+#include "vendor/stb/stb_image.h"
 
 const std::filesystem::path ALBEDO_PATH = std::filesystem::path(PROJECT_ROOT) / "assets/albedos";
 std::filesystem::path albedopath(const char *path) {

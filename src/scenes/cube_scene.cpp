@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include "scenes/cube_scene.hpp"
 #include "GLFW/glfw3.h"
 #include "color_shader.hpp"

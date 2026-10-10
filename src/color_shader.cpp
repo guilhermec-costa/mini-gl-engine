@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include "color_shader.hpp"
 #include "shader.hpp"
 #include <fstream>

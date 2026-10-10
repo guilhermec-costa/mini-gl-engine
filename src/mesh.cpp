@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include "mesh.hpp"
 
 namespace Eng {

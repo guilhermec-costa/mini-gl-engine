@@ -11,6 +11,7 @@
 #include "meshes/cube_test.hpp"
 #include "scenes/light_scene.hpp"
 #include <chrono>
+#include <iostream>
 #include <thread>
 
 namespace Eng {
@@ -109,17 +110,14 @@ void Controller::loop() {
     0.1f, 100.f
   );
 
-  auto cube_scene = CubeScene(_window, main_camera);
   auto light_scene = LightScene(_window, main_camera);
-  // auto geometry_scene = GeometryScene(_window, main_camera);
-  // scenes.push_back(&geometry_scene);
-  // scenes.push_back(&cube_scene);
-
   scenes.push_back(&light_scene);
 
   const float TARGET_FPS = 120;
   const float TARGET_DELTA_TIME = 1.0 / TARGET_FPS;
   double last_frame_time = glfwGetTime();
+
+  auto render_metadata = _renderer->get_metadata();
   while (!should_stop()) {
     double frame_start = glfwGetTime();
     double delta_time = frame_start - last_frame_time;
@@ -135,6 +133,7 @@ void Controller::loop() {
     ImGui::Text("Delta time: %.4f", delta_time);
     ImGui::Text("Triangles: %d", _renderer->get_triangle());
     ImGui::Text("Draw calls: %d", _renderer->get_draw_call_count());
+    ImGui::Text("GPU: %s", render_metadata.gpu_model);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     ImGui::End();
 
