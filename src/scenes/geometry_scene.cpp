@@ -69,8 +69,6 @@ GeometryScene::GeometryScene(Eng::Window *window, Eng::Camera &camera)
   objects.push_back(&quad_right);
 }
 
-void GeometryScene::prepare_render() {}
-
 void GeometryScene::update(float delta) {
   const float time = static_cast<float>(glfwGetTime());
 

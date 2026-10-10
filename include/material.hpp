@@ -10,7 +10,8 @@ namespace Eng {
 
 class Material {
   static constexpr unsigned short ALBEDO_UNIT = 0;
-  static constexpr unsigned short DIFFUSE_MAP_UNIT = 7;
+  static constexpr unsigned short DIFFUSE_MAP_UNIT = 1;
+  static constexpr unsigned short SPECULAR_MAP_UNIT = 2;
 
 public:
   Material(Shader& shader): shader(shader) {};
@@ -22,7 +23,8 @@ public:
   void set_diffuse(const glm::vec3 diffuse);
   void set_specular(const glm::vec3 specular);
   void set_shininess(const float shininess);
-  void set_diffuse_map(Texture2D& diffuse_map);
+  void set_diffuse_map(Texture2D* diffuse_map);
+  void set_specular_map(Texture2D* specular_map);
   void set_light(const Light& light);
 
 public:
@@ -32,6 +34,7 @@ public:
   glm::vec3 ambient_light;
   Texture2D* albedo = nullptr;
   Texture2D* diffuse_map = nullptr;
+  Texture2D* specular_map = nullptr;
   UniformMap uniforms;
 
 private:

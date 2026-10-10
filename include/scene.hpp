@@ -11,7 +11,6 @@ public:
     : camera(camera) {};
   virtual ~Scene() = default;
   virtual void update(float delta) = 0;
-  virtual void prepare_render() = 0;
 
 public:
   Camera& camera;

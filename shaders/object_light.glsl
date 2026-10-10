@@ -4,11 +4,18 @@ in vec3 normal;
 in vec3 frag_pos;
 in vec2 tex_coord;
 
+struct LightMap {
+  sampler2D diffuse_map;
+  bool use_diffuse_map;
+
+  sampler2D specular_map;
+  bool use_specular_map;
+};
+
 struct Material { 
   vec3 ambient;
   vec3 diffuse;
-  sampler2D diffuse_map;
-  bool use_diffuse_map;
+  LightMap light_map;
   vec3 specular;
   float shininess;
 };
@@ -29,27 +36,33 @@ out vec4 frag_color;
 void main() {
   vec3 norm = normalize(normal);
   vec3 light_dir = normalize(light.position - frag_pos);
-  float diff = max(dot(norm, light_dir), 0.0);
 
   vec3 material_ambient = material.ambient;
   vec3 material_diffuse = material.diffuse;
 
-  if(material.use_diffuse_map) {
-    vec3 tex_color = texture(material.diffuse_map, tex_coord).rgb;
+  if(material.light_map.use_diffuse_map) {
+    vec3 tex_color = texture(material.light_map.diffuse_map, tex_coord).rgb;
     material_ambient = tex_color;
     material_diffuse = tex_color;
   }
   vec3 ambient = light.ambient * material_ambient;
-  vec3 diffuse = light.diffuse * (diff * material_diffuse);
 
-  float spec = 0.0;
+  float diffuse_intensity = max(dot(norm, light_dir), 0.0);
+  vec3 diffuse = light.diffuse * (diffuse_intensity * material_diffuse);
 
-  if(diff > 0.0) {
+
+  float spec_intensity = 0.0;
+  if(diffuse_intensity > 0.0) {
     vec3 view_dir = normalize(view_pos - frag_pos);
     vec3 reflect_dir = reflect(-light_dir, norm);
-    spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
+    spec_intensity = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
   }
-  vec3 specular = light.specular * (spec * material.specular);
+
+  vec3 material_specular = material.specular;
+  if(material.light_map.use_specular_map) {
+    material_specular = texture(material.light_map.specular_map, tex_coord).rgb;
+  }
+  vec3 specular = light.specular * (spec_intensity * material_specular);
   vec3 result_color = ambient + diffuse + specular;
   frag_color = vec4(result_color, 1.0);
 }

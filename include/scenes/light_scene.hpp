@@ -9,7 +9,6 @@ class LightScene : public Eng::Scene {
 public:
   LightScene(Eng::Window * window, Eng::Camera& camera);
   void update(float delta) override;
-  void prepare_render() override;
 
 private:
   std::unique_ptr<Eng::Shader> light_source_shader;
@@ -28,6 +27,7 @@ private:
   std::unique_ptr<Eng::Material> sphere_material;
   std::unique_ptr<Eng::Material> light_source_material;
   std::unique_ptr<Eng::Texture2D> diffuse_map;
+  std::unique_ptr<Eng::Texture2D> specular_map;
 
   // Objects
   Eng::RenderObject cube;

@@ -45,7 +45,9 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   cube.transform.set_position({-0.8f, 0.2f, -0.1f});
   cube.transform.set_scale({0.6f, 0.6f, 0.6f});
   diffuse_map = std::make_unique<Eng::Texture2D>(make_texture("wood_square.png"));
-  cube.material->set_diffuse_map(*diffuse_map.get());
+  specular_map = std::make_unique<Eng::Texture2D>(make_texture("box_specular_map.png"));
+  cube.material->set_diffuse_map(diffuse_map.get());
+  cube.material->set_specular_map(specular_map.get());
 
   cube2 = Eng::RenderObject(&cube_mesh, cube2_material.get());
   cube2.transform.set_position({0.0f, -0.6f, -1.0f});
@@ -71,7 +73,7 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   light = Eng::Light(&sphere_mesh, light_source_material.get());
   light.transform.set_position({0.8f, 0.8f, 1.0f});
   light.transform.set_scale({0.15f, 0.15f, 0.15f});
-  light.ambient = {1.0f, 1.0f, 1.0f};
+  light.ambient = {0.3f, 0.2f, 0.0f};
   light.diffuse  = {1.0f, 1.0f, 1.0f};
   light.specular = {1.0f, 1.0f, 1.0f};
   light_source_material->patch_uniform("color", light.ambient);
@@ -117,8 +119,6 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   objects.push_back(&sphere);
   objects.push_back(&light);
 }
-
-void LightScene::prepare_render() {}
 
 void LightScene::update(float delta) {
   float time = glfwGetTime();

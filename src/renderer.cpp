@@ -37,7 +37,6 @@ void Renderer::draw(const RenderObject& object, const Camera& camera) {
 }
  
 void Renderer::render(Scene& scene) {
-  scene.prepare_render();
   for(RenderObject* o : scene.objects) {
     draw(*o, scene.camera);
   } 

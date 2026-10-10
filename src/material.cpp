@@ -9,8 +9,13 @@ void Material::bind() {
   }
   if(diffuse_map) {
     diffuse_map->bind(DIFFUSE_MAP_UNIT);
-    patch_uniform("material.diffuse_map", DIFFUSE_MAP_UNIT);
-    patch_uniform("material.use_diffuse_map", true);
+    patch_uniform("material.light_map.diffuse_map", DIFFUSE_MAP_UNIT);
+    patch_uniform("material.light_map.use_diffuse_map", true);
+  }
+  if(specular_map) {
+    specular_map->bind(SPECULAR_MAP_UNIT);
+    patch_uniform("material.light_map.specular_map", SPECULAR_MAP_UNIT);
+    patch_uniform("material.light_map.use_specular_map", true);
   }
 
   shader.bind();
@@ -53,8 +58,12 @@ void Material::set_light(const Light& light) {
   patch_uniform("light.position", light.transform.position);
 }
 
-void Material::set_diffuse_map(Texture2D& map) {
-  diffuse_map = &map;
+void Material::set_diffuse_map(Texture2D* const map) {
+  diffuse_map = map;
+}
+
+void Material::set_specular_map(Texture2D* const map) {
+  specular_map = map;
 }
 
 } // namespace Eng
