@@ -1,6 +1,7 @@
 #include <cmath>
 #include <glad/glad.h>
 #include "color_shader.hpp"
+#include "macros.hpp"
 #include "material.hpp"
 #include "meshes/cube_test.hpp"
 #include "primitives.hpp"
@@ -44,10 +45,10 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   cube = Eng::RenderObject(&cube_mesh, cube_material.get());
   cube.transform.set_position({-0.8f, 0.2f, -0.1f});
   cube.transform.set_scale({0.6f, 0.6f, 0.6f});
-  diffuse_map = std::make_unique<Eng::Texture2D>(make_texture("wood_square.png"));
-  specular_map = std::make_unique<Eng::Texture2D>(make_texture("box_specular_map.png"));
-  cube.material->set_diffuse_map(diffuse_map.get());
-  cube.material->set_specular_map(specular_map.get());
+  cube.material->set_diffuse_map(TEXTURES.get(TextureId::MedievalBoxDiffuse));
+  cube.material->set_specular_map(TEXTURES.get(TextureId::MedievalBoxSpecular));
+  cube.material->set_emission_map(TEXTURES.get(TextureId::Matrix));
+  cube.material->set_emission_intensity(1.0f);
 
   cube2 = Eng::RenderObject(&cube_mesh, cube2_material.get());
   cube2.transform.set_position({0.0f, -0.6f, -1.0f});

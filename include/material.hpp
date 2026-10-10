@@ -12,6 +12,7 @@ class Material {
   static constexpr unsigned short ALBEDO_UNIT = 0;
   static constexpr unsigned short DIFFUSE_MAP_UNIT = 1;
   static constexpr unsigned short SPECULAR_MAP_UNIT = 2;
+  static constexpr unsigned short EMISSION_MAP_UNIT = 3;
 
 public:
   Material(Shader& shader): shader(shader) {};
@@ -23,8 +24,10 @@ public:
   void set_diffuse(const glm::vec3 diffuse);
   void set_specular(const glm::vec3 specular);
   void set_shininess(const float shininess);
-  void set_diffuse_map(Texture2D* diffuse_map);
-  void set_specular_map(Texture2D* specular_map);
+  void set_diffuse_map(Texture2D* const diffuse_map);
+  void set_specular_map(Texture2D* const specular_map);
+  void set_emission_map(Texture2D* const emission_map);
+  void set_emission_intensity(float intensity);
   void set_light(const Light& light);
 
 public:
@@ -35,6 +38,7 @@ public:
   Texture2D* albedo = nullptr;
   Texture2D* diffuse_map = nullptr;
   Texture2D* specular_map = nullptr;
+  Texture2D* emission_map = nullptr;
   UniformMap uniforms;
 
 private:
