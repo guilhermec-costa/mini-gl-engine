@@ -17,6 +17,11 @@ void Material::bind() {
     patch_uniform("material.light_map.specular_map", SPECULAR_MAP_UNIT);
     patch_uniform("material.light_map.use_specular_map", true);
   }
+  if(emission_map) {
+    emission_map->bind(EMISSION_MAP_UNIT);
+    patch_uniform("material.light_map.emission_map", EMISSION_MAP_UNIT);
+    patch_uniform("material.light_map.use_emission_map", true);
+  }
 
   shader.bind();
   shader.apply_external_uniforms(uniforms);
@@ -64,6 +69,14 @@ void Material::set_diffuse_map(Texture2D* const map) {
 
 void Material::set_specular_map(Texture2D* const map) {
   specular_map = map;
+}
+
+void Material::set_emission_map(Texture2D* const map) {
+  emission_map = map;
+}
+
+void Material::set_emission_intensity(float intensity) {
+  patch_uniform("material.light_map.emission_intensity", intensity);
 }
 
 } // namespace Eng

@@ -26,8 +26,6 @@ private:
   std::unique_ptr<Eng::Material> cube5_material;
   std::unique_ptr<Eng::Material> sphere_material;
   std::unique_ptr<Eng::Material> light_source_material;
-  std::unique_ptr<Eng::Texture2D> diffuse_map;
-  std::unique_ptr<Eng::Texture2D> specular_map;
 
   // Objects
   Eng::RenderObject cube;

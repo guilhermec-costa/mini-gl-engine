@@ -10,6 +10,10 @@ struct LightMap {
 
   sampler2D specular_map;
   bool use_specular_map;
+
+  sampler2D emission_map;
+  float emission_intensity;
+  bool use_emission_map;
 };
 
 struct Material { 
@@ -62,7 +66,12 @@ void main() {
   if(material.light_map.use_specular_map) {
     material_specular = texture(material.light_map.specular_map, tex_coord).rgb;
   }
+
+  vec3 emission_value = vec3(0.0);
+  if(material.light_map.use_emission_map) {
+    emission_value = texture(material.light_map.emission_map, tex_coord).rgb * material.light_map.emission_intensity;
+  }
   vec3 specular = light.specular * (spec_intensity * material_specular);
-  vec3 result_color = ambient + diffuse + specular;
+  vec3 result_color = ambient + diffuse + emission_value + specular;
   frag_color = vec4(result_color, 1.0);
 }

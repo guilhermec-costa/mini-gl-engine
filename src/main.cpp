@@ -6,8 +6,12 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "renderer.hpp"
+#include "macros.hpp"
+#include "resource/texture_storage.hpp"
 #include "window.hpp"
 #include "imgui.h"
+
+using namespace Eng;
 
 void set_base_hints() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -27,7 +31,7 @@ int main(int argc, char* argv[]) {
   std::cout << "base hints setted" << std::endl;
 
   {
-    Eng::Window window = Eng::Window(WINDOW_WIDTH, WINDOW_HEIGHT, "MiniGL Engine");
+    Window window = Window(WINDOW_WIDTH, WINDOW_HEIGHT, "MiniGL Engine");
     if(!window.created()) {
       glfwTerminate();
       return EXIT_FAILURE;
@@ -52,11 +56,18 @@ int main(int argc, char* argv[]) {
     ImGui_ImplOpenGL3_Init(nullptr);
   
     glViewport(0, 0, window.width, window.height);
-    Eng::Renderer renderer = Eng::Renderer();
-    Eng::Input input_handler = Eng::Input();
+    Renderer renderer = Renderer();
+    Input input_handler = Input();
 
     window.set_clear_color({1.0f, 1.0f, 1.0f, 1.0f, true});
-    Eng::Controller ctrl = Eng::Controller(&window, &renderer, &input_handler);
+
+    TEXTURES.load(TextureId::StoneWall, "wall.jpg");
+    TEXTURES.load(TextureId::MedievalBoxDiffuse, "wood_square.png");
+    TEXTURES.load(TextureId::WoodFace, "wood.jpg");
+    TEXTURES.load(TextureId::Matrix, "matrix.jpg");
+    TEXTURES.load(TextureId::MedievalBoxSpecular, "box_specular_map.png");
+
+    Controller ctrl = Controller(&window, &renderer, &input_handler);
     ctrl.loop();
   
     ImGui_ImplOpenGL3_Shutdown();
