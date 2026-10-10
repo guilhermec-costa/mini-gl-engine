@@ -9,7 +9,8 @@ enum class TextureId {
   MedievalBoxDiffuse,
   MedievalBoxSpecular,
   WoodFace,
-  Matrix
+  Matrix,
+  Earth
 };
 
 namespace Eng {
