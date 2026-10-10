@@ -17,7 +17,7 @@ CubeScene::CubeScene(Eng::Window* window, Eng::Camera& camera) : Eng::Scene(came
     return;
   }
   texture_shader = std::make_unique<Eng::Shader>(std::move(*_texture_shader));
-  texture = Eng::Texture2D(albedopath("wood.jpg").c_str(), GL_RGB, GL_RGB);
+  texture = Eng::Texture2D(albedopath("wood.jpg").c_str());
   cube_material = std::make_unique<Eng::Material>(*texture_shader, texture);
   cube_mesh = make_cube(cube_test_mesh);
   cube = Eng::RenderObject(&cube_mesh, cube_material.get());

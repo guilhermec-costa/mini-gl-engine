@@ -20,10 +20,12 @@ Window::Window(uint16_t w, uint16_t h, const char *title)
 }
 
 Window::~Window() {
+  std::cout << "Destroying window..." << std::endl;
   glfwDestroyWindow(_window);
 }
 
 void Window::close() {
+  std::cout << "Closing engine window..." << std::endl;
   glfwSetWindowShouldClose(_window, GLFW_TRUE);
 }
 

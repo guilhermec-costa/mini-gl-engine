@@ -9,7 +9,7 @@ namespace Eng {
 class Texture2D {
 public:
   Texture2D() = default;
-  Texture2D(const char *path, int internal_format, int pixel_format);
+  Texture2D(const char *path);
   ~Texture2D();
 
   Texture2D(const Texture2D&) = delete;
@@ -25,4 +25,8 @@ private:
   unsigned int id;
 };
 
+}
+
+inline Eng::Texture2D make_texture(const char *path) {
+  return Eng::Texture2D(albedopath(path).c_str());
 }

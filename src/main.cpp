@@ -54,6 +54,8 @@ int main(int argc, char* argv[]) {
     glViewport(0, 0, window.width, window.height);
     Eng::Renderer renderer = Eng::Renderer();
     Eng::Input input_handler = Eng::Input();
+
+    window.set_clear_color({1.0f, 1.0f, 1.0f, 1.0f, true});
     Eng::Controller ctrl = Eng::Controller(&window, &renderer, &input_handler);
     ctrl.loop();
   

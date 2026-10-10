@@ -27,6 +27,9 @@ bool Controller::should_stop() const {
 };
 
 void Controller::process_input(float delta_time) {
+  if(_input->key_pressed(GLFW_KEY_F11)) {
+    _window->close();
+  }
   if(_input->key_pressed(GLFW_KEY_ESCAPE)) {
     toggle_cursor_captured();
     glfwSetInputMode(
