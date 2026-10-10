@@ -9,8 +9,6 @@
 class GeometryScene : public Eng::Scene {
 public:
   GeometryScene(Eng::Window *window, Eng::Camera &camera);
-
-  void prepare_render() override;
   void update(float delta) override;
 
 private:

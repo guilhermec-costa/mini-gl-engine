@@ -43,10 +43,6 @@ CubeScene::CubeScene(Eng::Window* window, Eng::Camera& camera) : Eng::Scene(came
   objects.push_back(&cube);
 }
 
-void CubeScene::prepare_render() {
-  triangle_material->patch_uniform("color", EngTypes::Color{255.0f, 0.0f, 0.0f, 255.0f});
-}
-
 void CubeScene::update(float delta) {
   cube.transform.set_rotate(glfwGetTime() * 60, {0.4f, 1.0f, 0.0});
   triangle.transform.set_scale({1.2f, 1.2f, 1.02f});

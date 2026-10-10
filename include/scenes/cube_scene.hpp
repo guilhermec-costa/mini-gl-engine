@@ -9,7 +9,6 @@ class CubeScene : public Eng::Scene {
 public:
   CubeScene(Eng::Window * window, Eng::Camera& camera);
   void update(float delta) override;
-  void prepare_render() override;
 
 private:
   std::unique_ptr<Eng::Shader> color_shader;
