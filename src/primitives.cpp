@@ -1,5 +1,5 @@
 #include "primitives.hpp"
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include <numbers>
 #include <ostream>
 #include "glm/ext/matrix_transform.hpp"

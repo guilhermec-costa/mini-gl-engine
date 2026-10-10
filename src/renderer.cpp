@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <vendor/glad/glad.h>
 #include <iostream>
 #include "renderer.hpp"
 #include "material.hpp"
@@ -50,7 +50,15 @@ void Renderer::reset_stats() {
 int Renderer::get_triangle() const {
   return triangle_count;
 }
+
 int Renderer::get_draw_call_count() const {
   return draw_call_count;
+}
+
+RenderMetadata Renderer::get_metadata() const {
+  const GLubyte* renderer = glGetString(GL_RENDERER);
+  const GLubyte* vendor = glGetString(GL_VENDOR);
+  const GLubyte* version = glGetString(GL_VERSION);
+  return RenderMetadata{renderer, vendor, version};
 }
 }

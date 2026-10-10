@@ -1,7 +1,7 @@
 #pragma once
 
-#include "render_object.hpp"
 #include "texture2d.hpp"
+#include "light.hpp"
 #include "shader.hpp"
 #include "types.hpp"
 #include <optional>
