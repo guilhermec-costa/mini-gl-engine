@@ -7,6 +7,11 @@ void Material::bind() {
     albedo->bind(ALBEDO_UNIT);
     patch_uniform("albedo", ALBEDO_UNIT);
   }
+  if(diffuse_map) {
+    diffuse_map->bind(DIFFUSE_MAP_UNIT);
+    patch_uniform("material.diffuse_map", DIFFUSE_MAP_UNIT);
+    patch_uniform("material.use_diffuse_map", true);
+  }
 
   shader.bind();
   shader.apply_external_uniforms(uniforms);
@@ -15,6 +20,14 @@ void Material::bind() {
 
 void Material::patch_uniform(std::string name, UniformValue new_value) {
   uniforms[name] = std::move(new_value);
+}
+
+std::optional<UniformValue> Material::get_uniform(std::string name) const {
+  auto it = uniforms.find(name);
+  if(it == uniforms.end()) 
+    return std::nullopt;
+
+  return it->second;
 }
 
 void Material::set_ambient(const glm::vec3 ambient) {
@@ -40,6 +53,8 @@ void Material::set_light(const Light& light) {
   patch_uniform("light.position", light.transform.position);
 }
 
+void Material::set_diffuse_map(Texture2D& map) {
+  diffuse_map = &map;
+}
 
-void Material::set_albedo(Texture2D &a) { albedo = &a; }
 } // namespace Eng

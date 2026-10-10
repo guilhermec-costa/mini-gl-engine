@@ -9,16 +9,24 @@ std::filesystem::path albedopath(const char *path) {
 
 namespace Eng {
 
-Texture2D::Texture2D(const char *path, int internal_format, int pixel_format) 
+Texture2D::Texture2D(const char *path) 
 : repeat_x_mode(GL_REPEAT), repeat_y_mode(GL_REPEAT) {
   glGenTextures(1, &id);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, id);
 
-  int w, h, nrch;
-  unsigned char *data = stbi_load(path, &w, &h, &nrch, 0);
+  int w, h, nr_components;
+  unsigned char *data = stbi_load(path, &w, &h, &nr_components, 0);
   if (data) {
-    glTexImage2D(GL_TEXTURE_2D, 0, internal_format, w, h, 0, pixel_format,
+    GLenum format;
+    if(nr_components == 1)
+      format = GL_RED;
+    else if(nr_components == 3)
+      format = GL_RGB;
+    else if(nr_components == 4)
+      format = GL_RGBA;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format,
                   GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
   }

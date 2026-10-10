@@ -7,6 +7,7 @@
 #include "scene.hpp"
 #include "scenes/light_scene.hpp"
 #include "shader.hpp"
+#include "texture2d.hpp"
 #include <iostream>
 #include <ostream>
 
@@ -43,6 +44,8 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   cube = Eng::RenderObject(&cube_mesh, cube_material.get());
   cube.transform.set_position({-0.8f, 0.2f, -0.1f});
   cube.transform.set_scale({0.6f, 0.6f, 0.6f});
+  diffuse_map = std::make_unique<Eng::Texture2D>(make_texture("wood_square.png"));
+  cube.material->set_diffuse_map(*diffuse_map.get());
 
   cube2 = Eng::RenderObject(&cube_mesh, cube2_material.get());
   cube2.transform.set_position({0.0f, -0.6f, -1.0f});
@@ -68,11 +71,9 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   light = Eng::Light(&sphere_mesh, light_source_material.get());
   light.transform.set_position({0.8f, 0.8f, 1.0f});
   light.transform.set_scale({0.15f, 0.15f, 0.15f});
-  light.ambient = {0.2f, 0.5f, 1.0f};
-  light.diffuse  = {1.0f, 0.5f, 1.0f};
-  light.specular = {1.0f, 0.5f, 1.0f};
-  
-
+  light.ambient = {1.0f, 1.0f, 1.0f};
+  light.diffuse  = {1.0f, 1.0f, 1.0f};
+  light.specular = {1.0f, 1.0f, 1.0f};
   light_source_material->patch_uniform("color", light.ambient);
 
   cube_material->set_light(light);
@@ -124,7 +125,7 @@ void LightScene::update(float delta) {
   cube.transform.set_rotate(time * 60, {0.4f, 1.0f, 0.0f});
   light.transform.set_rotate(time * 90,{0.4f, 1.0f, 0.0f});
 
-  float speed = 6.0f;
+  float speed = 2.0f;
   float radius = 2.5f;
 
   glm::vec3 light_pos = {
@@ -133,6 +134,13 @@ void LightScene::update(float delta) {
       cosf(time * speed) * radius
   };
 
+  light_source_material->patch_uniform("color", light.ambient);
+
   light.transform.set_position(light_pos);
+  cube_material->set_light(light);
+  cube2_material->set_light(light);
+  cube3_material->set_light(light);
+  cube4_material->set_light(light);
+  cube5_material->set_light(light);
   box_shader->patch_uniform("light.position", light_pos);
 }
