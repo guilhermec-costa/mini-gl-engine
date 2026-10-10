@@ -66,6 +66,7 @@ int main(int argc, char* argv[]) {
     TEXTURES.load(TextureId::WoodFace, "wood.jpg");
     TEXTURES.load(TextureId::Matrix, "matrix.jpg");
     TEXTURES.load(TextureId::MedievalBoxSpecular, "box_specular_map.png");
+    TEXTURES.load(TextureId::Earth, "earth.jpeg");
 
     Controller ctrl = Controller(&window, &renderer, &input_handler);
     ctrl.loop();

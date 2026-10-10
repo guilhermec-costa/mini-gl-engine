@@ -3,31 +3,26 @@
 namespace Eng {
 
 void Material::bind() {
-  if (albedo) {
-    albedo->bind(ALBEDO_UNIT);
-    patch_uniform("albedo", ALBEDO_UNIT);
-  }
-  if(diffuse_map) {
-    diffuse_map->bind(DIFFUSE_MAP_UNIT);
-    patch_uniform("material.light_map.diffuse_map", DIFFUSE_MAP_UNIT);
-    patch_uniform("material.light_map.use_diffuse_map", true);
-  }
-  if(specular_map) {
-    specular_map->bind(SPECULAR_MAP_UNIT);
-    patch_uniform("material.light_map.specular_map", SPECULAR_MAP_UNIT);
-    patch_uniform("material.light_map.use_specular_map", true);
-  }
-  if(emission_map) {
-    emission_map->bind(EMISSION_MAP_UNIT);
-    patch_uniform("material.light_map.emission_map", EMISSION_MAP_UNIT);
-    patch_uniform("material.light_map.use_emission_map", true);
-  }
-
+  bind_maps();
   shader.bind();
   shader.apply_external_uniforms(uniforms);
   shader.apply_internal_uniforms();
 }
 
+void Material::bind_maps() {
+  patch_uniform("material.light_map.diffuse_map", DIFFUSE_MAP_UNIT);
+  patch_uniform("material.light_map.specular_map", SPECULAR_MAP_UNIT);
+  patch_uniform("material.light_map.emission_map", EMISSION_MAP_UNIT);
+
+  patch_uniform("material.light_map.use_diffuse_map", diffuse_map != nullptr);
+  patch_uniform("material.light_map.use_specular_map", specular_map != nullptr);
+  patch_uniform("material.light_map.use_emission_map", emission_map != nullptr);
+
+  if(diffuse_map)  diffuse_map->bind(DIFFUSE_MAP_UNIT);
+  if(specular_map) specular_map->bind(SPECULAR_MAP_UNIT);
+  if(emission_map) emission_map->bind(EMISSION_MAP_UNIT);
+
+}
 void Material::patch_uniform(std::string name, UniformValue new_value) {
   uniforms[name] = std::move(new_value);
 }

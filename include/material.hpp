@@ -16,7 +16,6 @@ class Material {
 
 public:
   Material(Shader& shader): shader(shader) {};
-  Material(Shader& shader, Texture2D& albedo): shader(shader), albedo(&albedo) {};
   void bind();
   void patch_uniform(std::string name, UniformValue new_value);
   std::optional<UniformValue> get_uniform(std::string name) const;
@@ -33,9 +32,9 @@ public:
 public:
   EngTypes::Color color;
   bool use_diffuse_map = false;
+  bool use_emission_map = false;
   Shader& shader;
   glm::vec3 ambient_light;
-  Texture2D* albedo = nullptr;
   Texture2D* diffuse_map = nullptr;
   Texture2D* specular_map = nullptr;
   Texture2D* emission_map = nullptr;
@@ -44,6 +43,9 @@ public:
 private:
   float specular_strength;
   float ambient_strength;
+
+private:
   Material();
+  void bind_maps();
 };
 }

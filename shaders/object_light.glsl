@@ -70,6 +70,9 @@ void main() {
   vec3 emission_value = vec3(0.0);
   if(material.light_map.use_emission_map) {
     emission_value = texture(material.light_map.emission_map, tex_coord).rgb * material.light_map.emission_intensity;
+    if(length(material_specular) > 0.01 ) {
+      emission_value = vec3(0.0);
+    }
   }
   vec3 specular = light.specular * (spec_intensity * material_specular);
   vec3 result_color = ambient + diffuse + emission_value + specular;

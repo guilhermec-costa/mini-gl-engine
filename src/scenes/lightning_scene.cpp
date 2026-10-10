@@ -8,7 +8,6 @@
 #include "scene.hpp"
 #include "scenes/light_scene.hpp"
 #include "shader.hpp"
-#include "texture2d.hpp"
 #include <iostream>
 #include <ostream>
 
@@ -48,7 +47,7 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   cube.material->set_diffuse_map(TEXTURES.get(TextureId::MedievalBoxDiffuse));
   cube.material->set_specular_map(TEXTURES.get(TextureId::MedievalBoxSpecular));
   cube.material->set_emission_map(TEXTURES.get(TextureId::Matrix));
-  cube.material->set_emission_intensity(1.0f);
+  cube.material->set_emission_intensity(2.0f);
 
   cube2 = Eng::RenderObject(&cube_mesh, cube2_material.get());
   cube2.transform.set_position({0.0f, -0.6f, -1.0f});
@@ -69,13 +68,15 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   sphere = Eng::RenderObject(&sphere_mesh, sphere_material.get());
   sphere.transform.set_position({-0.1f, 0.45f, -1.f});
   sphere.transform.set_scale({1.f, 1.f, 1.f});
+  sphere.material->set_diffuse_map(TEXTURES.get(TextureId::Earth));
+  sphere.material->set_specular_map(TEXTURES.get(TextureId::Earth));
 
   light_source_material = std::make_unique<Eng::Material>(*light_source_shader);
   light = Eng::Light(&sphere_mesh, light_source_material.get());
   light.transform.set_position({0.8f, 0.8f, 1.0f});
   light.transform.set_scale({0.15f, 0.15f, 0.15f});
-  light.ambient = {0.3f, 0.2f, 0.0f};
-  light.diffuse  = {1.0f, 1.0f, 1.0f};
+  light.ambient = {0.5f, 0.5f, 0.5f};
+  light.diffuse  = {0.5f, 0.5f, 0.5f};
   light.specular = {1.0f, 1.0f, 1.0f};
   light_source_material->patch_uniform("color", light.ambient);
 
