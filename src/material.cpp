@@ -74,6 +74,25 @@ void Material::set_directional_light(const DirectionalLight& light) {
   patch_uniform("directional_light.specular", light.specular);
 }
 
+void Material::set_spotlight(const Spotlight& light) {
+  patch_uniform("use_spotlight", true);
+
+  patch_uniform("spotlight.position", light.position);
+  patch_uniform("spotlight.direction", light.direction);
+
+  patch_uniform("spotlight.ambient", light.ambient);
+  patch_uniform("spotlight.diffuse", light.diffuse);
+  patch_uniform("spotlight.specular", light.specular);
+
+  patch_uniform("spotlight.constant", light.constant);
+  patch_uniform("spotlight.linear", light.linear);
+  patch_uniform("spotlight.quadratic", light.quadratic);
+  patch_uniform("spotlight.radius", light.radius);
+
+  patch_uniform("spotlight.cut_off", light.cut_off);
+  patch_uniform("spotlight.outer_cut_off", light.outer_cut_off);
+}
+
 void Material::set_diffuse_map(Texture2D* const map) {
   diffuse_map = map;
 }

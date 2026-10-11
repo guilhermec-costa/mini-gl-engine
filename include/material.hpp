@@ -29,6 +29,7 @@ public:
   void set_emission_intensity(float intensity);
   void set_point_light(const PointLight& light);
   void set_directional_light(const DirectionalLight& light);
+  void set_spotlight(const Spotlight& light);
 
 public:
   EngTypes::Color color;

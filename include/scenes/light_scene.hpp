@@ -38,4 +38,5 @@ private:
   Eng::RenderObject lamp;
   Eng::PointLight point_light;
   Eng::DirectionalLight directional_light;
+  Eng::Spotlight spotlight;
 };

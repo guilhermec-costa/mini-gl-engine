@@ -95,6 +95,22 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   directional_light.diffuse  = {0.7f, 0.15f, 0.12f};
   directional_light.specular = {0.8f, 0.25f, 0.2f};
 
+  spotlight = Eng::Spotlight();
+  spotlight.position = camera.position;
+  spotlight.direction = camera.front;
+
+  spotlight.ambient  = {0.0f, 0.0f, 0.0f};
+  spotlight.diffuse  = {1.0f, 1.0f, 1.0f};
+  spotlight.specular = {1.0f, 1.0f, 1.0f};
+
+  spotlight.constant  = 1.0f;
+  spotlight.linear    = 0.09f;
+  spotlight.quadratic = 0.032f;
+  spotlight.radius    = 6.0f;
+
+  spotlight.cut_off = glm::cos(glm::radians(12.5f));
+  spotlight.outer_cut_off = glm::cos(glm::radians(20.5));
+
   lamp_material->patch_uniform("color", point_light.diffuse);
 
   cube_material->set_specular({0.6f, 0.6f, 0.6f});
@@ -160,4 +176,14 @@ void LightScene::update(float delta) {
   cube4_material->set_directional_light(directional_light);
   cube5_material->set_directional_light(directional_light);
   sphere.transform.set_rotate(time * 60, {0.0f, 1.0f, 0.0f});
+
+  spotlight.position = camera.position;
+  spotlight.direction = camera.front;
+
+  cube_material->set_spotlight(spotlight);
+  cube2_material->set_spotlight(spotlight);
+  cube3_material->set_spotlight(spotlight);
+  cube4_material->set_spotlight(spotlight);
+  cube5_material->set_spotlight(spotlight);
+  sphere_material->set_spotlight(spotlight);
 }

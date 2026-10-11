@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     Renderer renderer = Renderer();
     Input input_handler = Input();
 
-    window.set_clear_color({1.0f, 1.0f, 1.0f, 1.0f, true});
+    window.set_clear_color({1.0f, 0.0f, 0.0f, 1.0f, true});
 
     TEXTURES.load(TextureId::StoneWall, "wall.jpg");
     TEXTURES.load(TextureId::MedievalBoxDiffuse, "wood_square.png");

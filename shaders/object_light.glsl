@@ -6,6 +6,7 @@ in vec2 tex_coord;
 
 uniform bool use_directional_light;
 uniform bool use_point_light;
+uniform bool use_spotlight;
 
 struct LightMap {
   sampler2D diffuse_map;
@@ -46,10 +47,28 @@ struct PointLight {
   float radius;
 };
 
+struct Spotlight {
+  vec3 position;
+  vec3 direction;
+
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+
+  float constant;
+  float linear;
+  float quadratic;
+  float radius;
+
+  float cut_off;
+  float outer_cut_off;
+};
+
 uniform vec3 view_pos;
 uniform Material material;
 uniform PointLight point_light;
 uniform DirectionalLight directional_light;
+uniform Spotlight spotlight;
 
 out vec4 frag_color;
 
@@ -128,6 +147,66 @@ vec3 calculate_point_light(
   return (ambient + diffuse + specular) * attenuation;
 };
 
+vec3 calculate_spotlight(
+  Spotlight light,
+  vec3 norm, 
+  vec3 frag_pos,
+  vec3 view_dir,
+  vec3 material_ambient,
+  vec3 material_diffuse,
+  vec3 material_specular
+) {
+  vec3 light_dir = normalize(light.position - frag_pos);
+  float distance = length(light.position - frag_pos);
+
+  if(distance >= light.radius) {
+    return vec3(0.0);
+  }
+
+  float theta = dot(light_dir, normalize(-light.direction));
+  if(theta < light.outer_cut_off) {
+    return vec3(0.0);
+  }
+
+  float epsilon = light.cut_off - light.outer_cut_off;
+  float cone_intensity = clamp((theta - light.outer_cut_off) / epsilon, 0.0, 1.0);    
+  
+  float diffuse_intensity = max(dot(norm, light_dir),0.0);
+  vec3 diffuse = light.diffuse * diffuse_intensity * material_diffuse;
+
+  float spec_intensity = 0.0;
+  if (diffuse_intensity > 0.0) {
+    vec3 reflect_dir = reflect(-light_dir, norm);
+
+    spec_intensity = pow(
+      max(dot(view_dir, reflect_dir), 0.0),
+      material.shininess
+    );
+  }
+
+  vec3 specular = light.specular * spec_intensity * material_specular;
+  vec3 ambient = light.ambient * material_ambient;
+  float attenuation =
+    1.0 /
+    (
+      light.constant +
+      light.linear * distance +
+      light.quadratic * distance * distance
+    );
+
+  float radius_fade =
+    1.0 - smoothstep(
+      light.radius * 0.8,
+      light.radius,
+      distance
+    );
+
+  attenuation *= radius_fade;
+
+  return (ambient + diffuse + specular) * attenuation * cone_intensity;
+
+}
+
 void main() {
   vec3 norm = normalize(normal);
   vec3 view_dir = normalize(view_pos - frag_pos);
@@ -148,24 +227,40 @@ void main() {
 
   vec3 result = vec3(0.0);
 
-  result += calculate_directional_light(
-    directional_light,
-    norm,
-    view_dir,
-    material_ambient, 
-    material_diffuse, 
-    material_specular
-  );
+  if(use_directional_light) {
+    result += calculate_directional_light(
+      directional_light,
+      norm,
+      view_dir,
+      material_ambient, 
+      material_diffuse, 
+      material_specular
+    );
+  }
 
-  result += calculate_point_light(
-    point_light,
-    norm,
-    frag_pos,
-    view_dir,
-    material_ambient, 
-    material_diffuse, 
-    material_specular
-  );
+  if(use_point_light) {
+    result += calculate_point_light(
+      point_light,
+      norm,
+      frag_pos,
+      view_dir,
+      material_ambient, 
+      material_diffuse, 
+      material_specular
+    );
+  }
+
+  if(use_spotlight) {
+    result += calculate_spotlight(
+      spotlight,
+      norm,
+      frag_pos,
+      view_dir,
+      material_ambient, 
+      material_diffuse, 
+      material_specular
+    );
+  }
 
   vec3 emission_value = vec3(0.0);
   if(material.light_map.use_emission_map) {
