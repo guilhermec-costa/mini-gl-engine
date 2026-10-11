@@ -1,6 +1,7 @@
 #include <cmath>
 #include <vendor/glad/glad.h>
 #include "color_shader.hpp"
+#include "light.hpp"
 #include "macros.hpp"
 #include "material.hpp"
 #include "meshes/cube_test.hpp"
@@ -29,7 +30,7 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
     std::cout << light_shader.error() << std::endl;
     return;
   }
-  light_source_shader = std::make_unique<Eng::Shader>(std::move(*light_shader));
+  lamp_shader = std::make_unique<Eng::Shader>(std::move(*light_shader));
 
   cube_material = std::make_unique<Eng::Material>(*box_shader);
   cube2_material = std::make_unique<Eng::Material>(*box_shader);
@@ -71,46 +72,56 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   sphere.material->set_diffuse_map(TEXTURES.get(TextureId::Earth));
   sphere.material->set_specular_map(TEXTURES.get(TextureId::Earth));
 
-  light_source_material = std::make_unique<Eng::Material>(*light_source_shader);
-  light = Eng::Light(&sphere_mesh, light_source_material.get());
-  light.transform.set_position({0.8f, 0.8f, 1.0f});
-  light.transform.set_scale({0.15f, 0.15f, 0.15f});
-  light.ambient = {0.5f, 0.5f, 0.5f};
-  light.diffuse  = {0.5f, 0.5f, 0.5f};
-  light.specular = {1.0f, 1.0f, 1.0f};
-  light_source_material->patch_uniform("color", light.ambient);
+  lamp_material = std::make_unique<Eng::Material>(*lamp_shader);
+  lamp = Eng::RenderObject{&sphere_mesh, lamp_material.get()};
+  lamp.transform.set_position({0.8f, 0.8f, 1.0f});
+  lamp.transform.set_scale({0.15f, 0.15f, 0.15f});
 
-  cube_material->set_light(light);
+  point_light = Eng::PointLight();
+  point_light.position = lamp.transform.position;
+  point_light.radius = 6.0f;
+
+  point_light.ambient  = {0.05f, 0.05f, 0.05f};
+  point_light.diffuse  = {0.8f, 0.8f, 0.8f};
+  point_light.specular = {1.0f, 1.0f, 1.0f};
+
+  point_light.constant  = 1.0f;
+  point_light.linear    = 0.09f;
+  point_light.quadratic = 0.032f;
+
+  directional_light = Eng::DirectionalLight();
+  directional_light.direction = {-0.2f, -1.0f, -0.3f};
+  directional_light.ambient  = {0.08f, 0.015f, 0.015f};
+  directional_light.diffuse  = {0.7f, 0.15f, 0.12f};
+  directional_light.specular = {0.8f, 0.25f, 0.2f};
+
+  lamp_material->patch_uniform("color", point_light.diffuse);
+
   cube_material->set_specular({0.6f, 0.6f, 0.6f});
   cube_material->set_ambient({1.0f, 0.1f, 0.1f});
   cube_material->set_diffuse({0.8f, 0.2f, 0.2f});
   cube_material->set_shininess(32.0f);
 
-  cube2_material->set_light(light);
   cube2_material->set_specular({0.6f, 0.6f, 0.6f});
   cube2_material->set_ambient({0.1f, 1.0f, 0.1f});
   cube2_material->set_diffuse({0.2f, 0.8f, 0.2f});
   cube2_material->set_shininess(32.0f);
 
-  cube3_material->set_light(light);
   cube3_material->set_specular({0.6f, 0.6f, 0.6f});
   cube3_material->set_ambient({0.1f, 0.1f, 1.0f});
   cube3_material->set_diffuse({0.2f, 0.2f, 0.8f});
   cube3_material->set_shininess(32.0f);
 
-  cube4_material->set_light(light);
   cube4_material->set_specular({0.6f, 0.6f, 0.6f});
   cube4_material->set_ambient({1.0f, 0.7f, 0.1f});
   cube4_material->set_diffuse({0.9f, 0.5f, 0.1f});
   cube4_material->set_shininess(32.0f);
 
-  cube5_material->set_light(light);
   cube5_material->set_specular({0.6f, 0.6f, 0.6f});
   cube5_material->set_ambient({0.8f, 0.1f, 1.0f});
   cube5_material->set_diffuse({0.6f, 0.2f, 0.9f});
   cube5_material->set_shininess(32.0f); 
 
-  box_shader->patch_uniform("light_pos", light.transform.position);
   box_shader->patch_uniform("view_pos", camera.position);
 
   objects.push_back(&cube);
@@ -119,13 +130,12 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   objects.push_back(&cube4);
   objects.push_back(&cube5);
   objects.push_back(&sphere);
-  objects.push_back(&light);
+  objects.push_back(&lamp);
 }
 
 void LightScene::update(float delta) {
   float time = glfwGetTime();
   cube.transform.set_rotate(time * 60, {0.4f, 1.0f, 0.0f});
-  light.transform.set_rotate(time * 90,{0.4f, 1.0f, 0.0f});
 
   float speed = 2.0f;
   float radius = 2.5f;
@@ -136,14 +146,18 @@ void LightScene::update(float delta) {
       cosf(time * speed) * radius
   };
 
-  light_source_material->patch_uniform("color", light.ambient);
-
-  light.transform.set_position(light_pos);
-  cube_material->set_light(light);
-  cube2_material->set_light(light);
-  cube3_material->set_light(light);
-  cube4_material->set_light(light);
-  cube5_material->set_light(light);
+  lamp_material->patch_uniform("color", point_light.diffuse);
+  lamp.transform.set_position(light_pos);
+  point_light.position = light_pos;
+  cube_material->set_point_light(point_light);
+  cube2_material->set_point_light(point_light);
+  cube3_material->set_point_light(point_light);
+  cube4_material->set_point_light(point_light);
+  cube5_material->set_point_light(point_light);
+  cube_material->set_directional_light(directional_light);
+  cube2_material->set_directional_light(directional_light);
+  cube3_material->set_directional_light(directional_light);
+  cube4_material->set_directional_light(directional_light);
+  cube5_material->set_directional_light(directional_light);
   sphere.transform.set_rotate(time * 60, {0.0f, 1.0f, 0.0f});
-  box_shader->patch_uniform("light.position", light_pos);
 }

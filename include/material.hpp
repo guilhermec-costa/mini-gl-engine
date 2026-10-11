@@ -27,7 +27,8 @@ public:
   void set_specular_map(Texture2D* const specular_map);
   void set_emission_map(Texture2D* const emission_map);
   void set_emission_intensity(float intensity);
-  void set_light(const Light& light);
+  void set_point_light(const PointLight& light);
+  void set_directional_light(const DirectionalLight& light);
 
 public:
   EngTypes::Color color;

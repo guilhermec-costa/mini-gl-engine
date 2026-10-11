@@ -1,5 +1,6 @@
 #pragma once
 
+#include "light.hpp"
 #include "material.hpp"
 #include "scene.hpp"
 #include "texture2d.hpp"
@@ -11,7 +12,7 @@ public:
   void update(float delta) override;
 
 private:
-  std::unique_ptr<Eng::Shader> light_source_shader;
+  std::unique_ptr<Eng::Shader> lamp_shader;
   std::unique_ptr<Eng::Shader> box_shader;
   Eng::Texture2D wood_texture;
   Eng::Texture2D wall_texture;
@@ -25,7 +26,7 @@ private:
   std::unique_ptr<Eng::Material> cube4_material;
   std::unique_ptr<Eng::Material> cube5_material;
   std::unique_ptr<Eng::Material> sphere_material;
-  std::unique_ptr<Eng::Material> light_source_material;
+  std::unique_ptr<Eng::Material> lamp_material;
 
   // Objects
   Eng::RenderObject cube;
@@ -34,5 +35,7 @@ private:
   Eng::RenderObject cube4;
   Eng::RenderObject cube5;
   Eng::RenderObject sphere;
-  Eng::Light light;
+  Eng::RenderObject lamp;
+  Eng::PointLight point_light;
+  Eng::DirectionalLight directional_light;
 };

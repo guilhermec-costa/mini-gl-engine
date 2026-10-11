@@ -51,11 +51,27 @@ void Material::set_shininess(const float shininess) {
   patch_uniform("material.shininess", shininess);
 }
 
-void Material::set_light(const Light& light) {
-  patch_uniform("light.ambient", light.ambient);
-  patch_uniform("light.diffuse", light.diffuse);
-  patch_uniform("light.specular", light.specular);
-  patch_uniform("light.position", light.transform.position);
+void Material::set_point_light(const PointLight& light) {
+  patch_uniform("use_point_light", true);
+  patch_uniform("point_light.position", light.position);
+
+  patch_uniform("point_light.ambient", light.ambient);
+  patch_uniform("point_light.diffuse", light.diffuse);
+  patch_uniform("point_light.specular", light.specular);
+
+  patch_uniform("point_light.constant", light.constant);
+  patch_uniform("point_light.linear", light.linear);
+  patch_uniform("point_light.quadratic", light.quadratic);
+  patch_uniform("point_light.radius", light.radius);
+}
+
+void Material::set_directional_light(const DirectionalLight& light) {
+  patch_uniform("use_directional_light", true);
+
+  patch_uniform("directional_light.direction", light.direction);
+  patch_uniform("directional_light.ambient", light.ambient);
+  patch_uniform("directional_light.diffuse", light.diffuse);
+  patch_uniform("directional_light.specular", light.specular);
 }
 
 void Material::set_diffuse_map(Texture2D* const map) {

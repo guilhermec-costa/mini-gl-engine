@@ -4,6 +4,9 @@ in vec3 normal;
 in vec3 frag_pos;
 in vec2 tex_coord;
 
+uniform bool use_directional_light;
+uniform bool use_point_light;
+
 struct LightMap {
   sampler2D diffuse_map;
   bool use_diffuse_map;
@@ -24,22 +27,110 @@ struct Material {
   float shininess;
 };
 
-struct Light {
-  vec3 position;
+struct DirectionalLight {
+  vec3 direction;
   vec3 ambient;
   vec3 diffuse;
   vec3 specular;
 };
 
+struct PointLight {
+  vec3 position;
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+
+  float constant;
+  float linear;
+  float quadratic;
+  float radius;
+};
+
 uniform vec3 view_pos;
 uniform Material material;
-uniform Light light;
+uniform PointLight point_light;
+uniform DirectionalLight directional_light;
 
 out vec4 frag_color;
 
+vec3 calculate_directional_light(
+  DirectionalLight light, 
+  vec3 norm, 
+  vec3 view_dir,
+  vec3 material_ambient,
+  vec3 material_diffuse,
+  vec3 material_specular
+) {
+  vec3 light_dir = normalize(-light.direction);
+
+  float diffuse_intensity = max(dot(norm, light_dir), 0.0);
+  vec3 diffuse = light.diffuse * diffuse_intensity * material_diffuse;
+
+  float spec_intensity = 0.0;
+
+  if (diffuse_intensity > 0.0) {
+    vec3 reflect_dir = reflect(-light_dir, norm);
+    spec_intensity = pow(
+        max(dot(view_dir, reflect_dir), 0.0),
+        material.shininess
+    );
+  }
+
+  vec3 ambient = light.ambient * material_ambient;
+  vec3 specular = light.specular * spec_intensity * material_specular;
+
+  return ambient + diffuse + specular;
+};
+
+vec3 calculate_point_light(
+  PointLight light, 
+  vec3 norm, 
+  vec3 frag_pos,
+  vec3 view_dir,
+  vec3 material_ambient,
+  vec3 material_diffuse,
+  vec3 material_specular
+) {
+  vec3 light_dir = normalize(light.position - frag_pos);
+  float distance = length(light.position - frag_pos);
+
+  if(distance >= light.radius) {
+    return vec3(0.0);
+  }
+
+  float diffuse_intensity = max(dot(norm, light_dir), 0.0);
+  vec3 diffuse = light.diffuse * diffuse_intensity * material_diffuse;
+
+  float spec_intensity = 0.0;
+  if(diffuse_intensity > 0.0) {
+    vec3 reflect_dir = reflect(-light_dir, norm);
+    spec_intensity = pow(
+      max(dot(view_dir, reflect_dir), 0.0),
+      material.shininess
+    );
+  }
+
+  vec3 specular = light.specular * spec_intensity * material_specular;
+  float attenuation = 1.0 /
+    (light.constant + 
+      light.linear * distance + 
+      light.quadratic * distance * distance);
+
+  float radius_fade = 
+    1.0 - smoothstep(
+      light.radius * 0.8, 
+      light.radius, 
+      distance
+    );
+
+  attenuation *= radius_fade;
+  vec3 ambient = light.ambient * material_ambient;
+  return (ambient + diffuse + specular) * attenuation;
+};
+
 void main() {
   vec3 norm = normalize(normal);
-  vec3 light_dir = normalize(light.position - frag_pos);
+  vec3 view_dir = normalize(view_pos - frag_pos);
 
   vec3 material_ambient = material.ambient;
   vec3 material_diffuse = material.diffuse;
@@ -49,23 +140,32 @@ void main() {
     material_ambient = tex_color;
     material_diffuse = tex_color;
   }
-  vec3 ambient = light.ambient * material_ambient;
-
-  float diffuse_intensity = max(dot(norm, light_dir), 0.0);
-  vec3 diffuse = light.diffuse * (diffuse_intensity * material_diffuse);
-
-
-  float spec_intensity = 0.0;
-  if(diffuse_intensity > 0.0) {
-    vec3 view_dir = normalize(view_pos - frag_pos);
-    vec3 reflect_dir = reflect(-light_dir, norm);
-    spec_intensity = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
-  }
 
   vec3 material_specular = material.specular;
   if(material.light_map.use_specular_map) {
     material_specular = texture(material.light_map.specular_map, tex_coord).rgb;
   }
+
+  vec3 result = vec3(0.0);
+
+  result += calculate_directional_light(
+    directional_light,
+    norm,
+    view_dir,
+    material_ambient, 
+    material_diffuse, 
+    material_specular
+  );
+
+  result += calculate_point_light(
+    point_light,
+    norm,
+    frag_pos,
+    view_dir,
+    material_ambient, 
+    material_diffuse, 
+    material_specular
+  );
 
   vec3 emission_value = vec3(0.0);
   if(material.light_map.use_emission_map) {
@@ -74,7 +174,6 @@ void main() {
       emission_value = vec3(0.0);
     }
   }
-  vec3 specular = light.specular * (spec_intensity * material_specular);
-  vec3 result_color = ambient + diffuse + emission_value + specular;
-  frag_color = vec4(result_color, 1.0);
+  result += emission_value;
+  frag_color = vec4(result, 1.0);
 }

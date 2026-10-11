@@ -1,14 +1,35 @@
 #pragma once 
 
-#include "render_object.hpp"
+
+#include "glm/ext/vector_float3.hpp"
 
 namespace Eng {
-  class Light : public RenderObject {
-  public:
-    Light() = default;
-    Light(Mesh* mesh, Material* material): RenderObject(mesh, material) {};
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-  };
+
+class DirectionalLight {
+public:
+  DirectionalLight() = default;
+
+public:
+  glm::vec3 direction;
+  glm::vec3 ambient;
+  glm::vec3 diffuse;
+  glm::vec3 specular;
+};
+
+class PointLight {
+public:
+  PointLight() = default;
+
+public:
+  glm::vec3 position;
+  glm::vec3 ambient;
+  glm::vec3 diffuse;
+  glm::vec3 specular;
+
+  float constant;
+  float linear;
+  float quadratic;
+  float radius;
+};
+
 }
