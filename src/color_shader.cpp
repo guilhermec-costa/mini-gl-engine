@@ -3,17 +3,17 @@
 #include "shader.hpp"
 #include <fstream>
 
-namespace Eng {
+namespace Engine {
 
 ColorShader::ColorShader(unsigned int program_id)
     : Shader(program_id), color({0.0f, 0.0f, 0.0f, 1.0f}) {};
 
-ColorShader::ColorShader(unsigned int program_id, EngTypes::Color color)
+ColorShader::ColorShader(unsigned int program_id, EngineTypes::Color color)
     : Shader(program_id), color(color) {};
 
 std::expected<ColorShader, std::string>
 ColorShader::create_color_shader(const char *frag_path,
-                                 std::optional<EngTypes::Color> color) {
+                                 std::optional<EngineTypes::Color> color) {
 
   std::filesystem::path vp = shaderpath("vertex.glsl");
   const char *vertex_path = vp.c_str();
@@ -74,7 +74,7 @@ ColorShader::create_color_shader(const char *frag_path,
   return ColorShader(ID);
 }
 
-void ColorShader::set_color(const EngTypes::Color c) { color = c; }
+void ColorShader::set_color(const EngineTypes::Color c) { color = c; }
 
 void ColorShader::bind() const { glUseProgram(_program_id); }
-} // namespace Eng
+} // namespace Engine

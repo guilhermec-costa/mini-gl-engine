@@ -13,7 +13,7 @@ enum class TextureId {
   Earth
 };
 
-namespace Eng {
+namespace Engine {
 
 class TextureStorage {
 public:
@@ -30,4 +30,4 @@ private:
   std::unordered_map<TextureId, std::unique_ptr<Texture2D>> textures;
 };
 
-} // namespace Eng
+} // namespace Engine

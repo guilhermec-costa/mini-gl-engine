@@ -3,7 +3,7 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
-namespace Eng {
+namespace Engine {
 
 Camera::Camera(Input* input, glm::vec3 position, glm::vec3 target, glm::vec3 up, 
               float initial_x, float initial_y, 
@@ -115,4 +115,4 @@ void Camera::reset_speed() {
   speed = initial_speed;
 }
 
-} // namespace Eng
+} // namespace Engine

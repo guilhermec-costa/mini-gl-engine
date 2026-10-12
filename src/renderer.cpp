@@ -3,7 +3,7 @@
 #include "renderer.hpp"
 #include "material.hpp"
 
-namespace Eng {
+namespace Engine {
 
 Renderer::Renderer() {
   glEnable(GL_DEPTH_TEST);

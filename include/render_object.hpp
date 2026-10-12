@@ -3,7 +3,7 @@
 #include "mesh.hpp"
 #include "primitives.hpp"
 
-namespace Eng {
+namespace Engine {
 class Material;
 
   class RenderObject {
@@ -12,8 +12,8 @@ class Material;
     RenderObject(Mesh* mesh, Material* material)
       : mesh(mesh), material(material) {}
   
-    Eng::Mesh* mesh;
-    Eng::Material* material;
-    Eng::Transform transform; 
+    Engine::Mesh* mesh;
+    Engine::Material* material;
+    Engine::Transform transform; 
   };
 }

@@ -3,7 +3,7 @@
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "input.hpp"
-namespace Eng {
+namespace Engine {
 
 class Camera {
 public:
@@ -50,4 +50,4 @@ private:
     Input* _input;
     float speed_up_factor = 3.0f;
 };
-} // namespace Eng
+} // namespace Engine

@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <vector>
 
-namespace Eng {
+namespace Engine {
 
 class Material;
 
@@ -47,4 +47,4 @@ private:
   size_t index_count;
 };
 
-} // namespace Eng
+} // namespace Engine

@@ -3,7 +3,7 @@
 #include "scene.hpp"
 #include <GL/gl.h>
 
-namespace Eng {
+namespace Engine {
 
 struct RenderMetadata {
   const GLubyte* gpu_model;

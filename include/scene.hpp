@@ -3,7 +3,7 @@
 #include "camera.hpp"
 #include "render_object.hpp"
 
-namespace Eng {
+namespace Engine {
 
 class Scene {
 public:

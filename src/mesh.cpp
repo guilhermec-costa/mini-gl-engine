@@ -1,7 +1,7 @@
 #include <vendor/glad/glad.h>
 #include "mesh.hpp"
 
-namespace Eng {
+namespace Engine {
 
 Mesh::Mesh(const std::vector<float> &raw_data,
            const std::vector<unsigned int>& indices,
@@ -77,4 +77,4 @@ size_t Mesh::get_index_count() const { return index_count; }
 
 unsigned int Mesh::get_VAO() const { return _VAO; }
 
-} // namespace Eng
+} // namespace Engine

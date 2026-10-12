@@ -4,12 +4,12 @@
 #include <cstdint>
 #include "types.hpp"
 
-namespace Eng {
+namespace Engine {
 
 class Window {
 public:
   uint16_t width, height;
-  EngTypes::Color clear_color = {0.0f, 0.0f, 0.0f, 1.0f};
+  EngineTypes::Color clear_color = {0.0f, 0.0f, 0.0f, 1.0f};
 
 public:
   Window(uint16_t w, uint16_t h, const char *title);
@@ -23,11 +23,11 @@ public:
   void clear() const;
   void close();
 
-  inline void set_clear_color(const EngTypes::Color color) {
+  inline void set_clear_color(const EngineTypes::Color color) {
     clear_color = color;
   }
 
 private:
   GLFWwindow *_window;
 };
-} // namespace Eng
+} // namespace Engine

@@ -11,7 +11,7 @@
 #include "window.hpp"
 #include "imgui.h"
 
-using namespace Eng;
+using namespace Engine;
 
 void set_base_hints() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

@@ -6,36 +6,36 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-GeometryScene::GeometryScene(Eng::Window *window, Eng::Camera &camera)
-    : Eng::Scene(camera) {
+GeometryScene::GeometryScene(Engine::Window *window, Engine::Camera &camera)
+    : Engine::Scene(camera) {
 
-  auto shader_result = Eng::ColorShader::create_color_shader(
+  auto shader_result = Engine::ColorShader::create_color_shader(
       shaderpath("frag_base_color.glsl").c_str(),
-      EngTypes::Color{0.0f, 0.0f, 0.0f, 1.0f});
+      EngineTypes::Color{0.0f, 0.0f, 0.0f, 1.0f});
 
   if (!shader_result) {
     std::cout << shader_result.error() << '\n';
     return;
   }
 
-  color_shader = std::make_unique<Eng::Shader>(std::move(*shader_result));
+  color_shader = std::make_unique<Engine::Shader>(std::move(*shader_result));
 
-  red_material = std::make_unique<Eng::Material>(*color_shader);
-  green_material = std::make_unique<Eng::Material>(*color_shader);
-  blue_material = std::make_unique<Eng::Material>(*color_shader);
-  yellow_material = std::make_unique<Eng::Material>(*color_shader);
+  red_material = std::make_unique<Engine::Material>(*color_shader);
+  green_material = std::make_unique<Engine::Material>(*color_shader);
+  blue_material = std::make_unique<Engine::Material>(*color_shader);
+  yellow_material = std::make_unique<Engine::Material>(*color_shader);
 
   red_material->patch_uniform("color",
-                              EngTypes::Color{255.0f, 40.0f, 40.0f, 255.0f});
+                              EngineTypes::Color{255.0f, 40.0f, 40.0f, 255.0f});
 
   green_material->patch_uniform("color",
-                                EngTypes::Color{40.0f, 255.0f, 80.0f, 255.0f});
+                                EngineTypes::Color{40.0f, 255.0f, 80.0f, 255.0f});
 
   blue_material->patch_uniform("color",
-                               EngTypes::Color{40.0f, 100.0f, 255.0f, 255.0f});
+                               EngineTypes::Color{40.0f, 100.0f, 255.0f, 255.0f});
 
   yellow_material->patch_uniform(
-      "color", EngTypes::Color{255.0f, 210.0f, 40.0f, 255.0f});
+      "color", EngineTypes::Color{255.0f, 210.0f, 40.0f, 255.0f});
 
   // --------------------------------------------------
   // Meshes
@@ -49,16 +49,16 @@ GeometryScene::GeometryScene(Eng::Window *window, Eng::Camera &camera)
       make_quad(glm::vec3{-0.5f, 0.5f, 0.0f}, glm::vec3{0.5f, 0.5f, 0.0f},
                 glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f});
 
-  triangle_left = Eng::RenderObject(&triangle_mesh, red_material.get());
-  triangle_center = Eng::RenderObject(&triangle_mesh, green_material.get());
-  triangle_right = Eng::RenderObject(&triangle_mesh, blue_material.get());
+  triangle_left = Engine::RenderObject(&triangle_mesh, red_material.get());
+  triangle_center = Engine::RenderObject(&triangle_mesh, green_material.get());
+  triangle_right = Engine::RenderObject(&triangle_mesh, blue_material.get());
 
   triangle_left.transform.set_position({-1.5f, 0.8f, 0.0f});
   triangle_center.transform.set_position({0.0f, 0.8f, 0.0f});
   triangle_right.transform.set_position({1.5f, 0.8f, 0.0f});
 
-  quad_left = Eng::RenderObject(&quad_mesh, blue_material.get());
-  quad_right = Eng::RenderObject(&quad_mesh, yellow_material.get());
+  quad_left = Engine::RenderObject(&quad_mesh, blue_material.get());
+  quad_right = Engine::RenderObject(&quad_mesh, yellow_material.get());
   quad_left.transform.set_position({-0.9f, -0.8f, 0.0f});
   quad_right.transform.set_position({0.9f, -0.8f, 0.0f});
 

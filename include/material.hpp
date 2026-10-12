@@ -6,7 +6,7 @@
 #include "types.hpp"
 #include <optional>
 
-namespace Eng {
+namespace Engine {
 
 class Material {
   static constexpr unsigned short ALBEDO_UNIT = 0;
@@ -32,7 +32,7 @@ public:
   void set_spotlight(const Spotlight& light);
 
 public:
-  EngTypes::Color color;
+  EngineTypes::Color color;
   bool use_diffuse_map = false;
   bool use_emission_map = false;
   Shader& shader;

@@ -14,7 +14,7 @@
 #include <iostream>
 #include <thread>
 
-namespace Eng {
+namespace Engine {
 
 inline void sleep(double seconds) {
   std::this_thread::sleep_for(std::chrono::duration<double>(seconds));
@@ -98,7 +98,7 @@ void Controller::loop() {
   glfwSetScrollCallback(_window->unwrap(), Controller::process_mouse_wheel);
   glfwSetKeyCallback(_window->unwrap(), Controller::key_callback);
   
-  main_camera = Eng::Camera(
+  main_camera = Engine::Camera(
     _input,
     glm::vec3(0.0f, 0.0f, 3.0f), 
     glm::vec3(0.0f, 0.0f, 0.0f), 
@@ -156,4 +156,4 @@ void Controller::loop() {
     }
   }
 }
-} // namespace Eng
+} // namespace Engine

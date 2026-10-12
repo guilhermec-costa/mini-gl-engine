@@ -15,7 +15,7 @@ std::filesystem::path shaderpath(const char* path) {
   return (SHADER_DIR / path);
 }
 
-namespace Eng {
+namespace Engine {
 
 Shader::Shader(unsigned int id) : _program_id(id) {
   add_uniform(IDENTITY_MODEL_UNIFORM);
@@ -152,8 +152,8 @@ void Shader::update_uniform(std::string name, UniformValue value) const {
           color.b,
           color.a
         );
-      } else if constexpr (std::is_same_v<T, EngTypes::Color>) {
-        const EngTypes::Color& color = value;
+      } else if constexpr (std::is_same_v<T, EngineTypes::Color>) {
+        const EngineTypes::Color& color = value;
         set_uniformv4f(
           name.c_str(),
           color.r,
@@ -222,4 +222,4 @@ void Shader::set_uniformmat4f(const char* name, const glm::mat4 mat) const {
   print_uniform_set_error("mat4f", name);
 }
 
-} // namespace Eng
+} // namespace Engine

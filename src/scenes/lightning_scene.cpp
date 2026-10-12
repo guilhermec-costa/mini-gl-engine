@@ -12,37 +12,37 @@
 #include <iostream>
 #include <ostream>
 
-LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
-    : Eng::Scene(camera) {
-  auto object_shader = Eng::ColorShader::create_color_shader(
+LightScene::LightScene(Engine::Window *window, Engine::Camera &camera)
+    : Engine::Scene(camera) {
+  auto object_shader = Engine::ColorShader::create_color_shader(
       shaderpath("object_light.glsl").c_str(),
-      EngTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
+      EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
   if (!object_shader) {
     std::cout << object_shader.error() << std::endl;
     return;
   }
-  box_shader = std::make_unique<Eng::Shader>(std::move(*object_shader));
+  box_shader = std::make_unique<Engine::Shader>(std::move(*object_shader));
 
-  auto light_shader = Eng::ColorShader::create_color_shader(
+  auto light_shader = Engine::ColorShader::create_color_shader(
       shaderpath("frag_base_color.glsl").c_str(),
-      EngTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
+      EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
   if (!light_shader) {
     std::cout << light_shader.error() << std::endl;
     return;
   }
-  lamp_shader = std::make_unique<Eng::Shader>(std::move(*light_shader));
+  lamp_shader = std::make_unique<Engine::Shader>(std::move(*light_shader));
 
-  cube_material = std::make_unique<Eng::Material>(*box_shader);
-  cube2_material = std::make_unique<Eng::Material>(*box_shader);
-  cube3_material = std::make_unique<Eng::Material>(*box_shader);
-  cube4_material = std::make_unique<Eng::Material>(*box_shader);
-  cube5_material = std::make_unique<Eng::Material>(*box_shader);
-  sphere_material = std::make_unique<Eng::Material>(*box_shader);
+  cube_material = std::make_unique<Engine::Material>(*box_shader);
+  cube2_material = std::make_unique<Engine::Material>(*box_shader);
+  cube3_material = std::make_unique<Engine::Material>(*box_shader);
+  cube4_material = std::make_unique<Engine::Material>(*box_shader);
+  cube5_material = std::make_unique<Engine::Material>(*box_shader);
+  sphere_material = std::make_unique<Engine::Material>(*box_shader);
 
   cube_mesh = make_cube_with_normals(cube_test_mesh_with_normals);
   sphere_mesh = make_sphere(0.2, 72, 36);
 
-  cube = Eng::RenderObject(&cube_mesh, cube_material.get());
+  cube = Engine::RenderObject(&cube_mesh, cube_material.get());
   cube.transform.set_position({-0.8f, 0.2f, -0.1f});
   cube.transform.set_scale({0.6f, 0.6f, 0.6f});
   cube.material->set_diffuse_map(TEXTURES.get(TextureId::MedievalBoxDiffuse));
@@ -50,34 +50,34 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   cube.material->set_emission_map(TEXTURES.get(TextureId::Matrix));
   cube.material->set_emission_intensity(2.0f);
 
-  cube2 = Eng::RenderObject(&cube_mesh, cube2_material.get());
+  cube2 = Engine::RenderObject(&cube_mesh, cube2_material.get());
   cube2.transform.set_position({0.0f, -0.6f, -1.0f});
   cube2.transform.set_scale({0.35f, 0.35f, 0.35f});
 
-  cube3 = Eng::RenderObject(&cube_mesh, cube3_material.get());
+  cube3 = Engine::RenderObject(&cube_mesh, cube3_material.get());
   cube3.transform.set_position({1.0f, 0.5f, -1.5f});
   cube3.transform.set_scale({0.45f, 0.45f, 0.45f});
 
-  cube4 = Eng::RenderObject(&cube_mesh, cube4_material.get());
+  cube4 = Engine::RenderObject(&cube_mesh, cube4_material.get());
   cube4.transform.set_position({-1.4f, -0.7f, -2.0f});
   cube4.transform.set_scale({0.3f, 0.7f, 0.3f});
 
-  cube5 = Eng::RenderObject(&cube_mesh, cube5_material.get());
+  cube5 = Engine::RenderObject(&cube_mesh, cube5_material.get());
   cube5.transform.set_position({0.7f, -0.8f, 0.2f});
   cube5.transform.set_scale({0.5f, 0.25f, 0.5f});
 
-  sphere = Eng::RenderObject(&sphere_mesh, sphere_material.get());
+  sphere = Engine::RenderObject(&sphere_mesh, sphere_material.get());
   sphere.transform.set_position({-0.1f, 0.45f, -1.f});
   sphere.transform.set_scale({1.f, 1.f, 1.f});
   sphere.material->set_diffuse_map(TEXTURES.get(TextureId::Earth));
   sphere.material->set_specular_map(TEXTURES.get(TextureId::Earth));
 
-  lamp_material = std::make_unique<Eng::Material>(*lamp_shader);
-  lamp = Eng::RenderObject{&sphere_mesh, lamp_material.get()};
+  lamp_material = std::make_unique<Engine::Material>(*lamp_shader);
+  lamp = Engine::RenderObject{&sphere_mesh, lamp_material.get()};
   lamp.transform.set_position({0.8f, 0.8f, 1.0f});
   lamp.transform.set_scale({0.15f, 0.15f, 0.15f});
 
-  point_light = Eng::PointLight();
+  point_light = Engine::PointLight();
   point_light.position = lamp.transform.position;
   point_light.radius = 6.0f;
 
@@ -89,13 +89,13 @@ LightScene::LightScene(Eng::Window *window, Eng::Camera &camera)
   point_light.linear    = 0.09f;
   point_light.quadratic = 0.032f;
 
-  directional_light = Eng::DirectionalLight();
+  directional_light = Engine::DirectionalLight();
   directional_light.direction = {-0.2f, -1.0f, -0.3f};
   directional_light.ambient  = {0.08f, 0.015f, 0.015f};
   directional_light.diffuse  = {0.7f, 0.15f, 0.12f};
   directional_light.specular = {0.8f, 0.25f, 0.2f};
 
-  spotlight = Eng::Spotlight();
+  spotlight = Engine::Spotlight();
   spotlight.position = camera.position;
   spotlight.direction = camera.front;
 

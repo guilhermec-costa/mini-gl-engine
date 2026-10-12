@@ -15,7 +15,7 @@ using UniformValue = std::variant<
   glm::vec3,
   glm::vec4,
   glm::mat4,
-  EngTypes::Color>;
+  EngineTypes::Color>;
 
 struct Uniform {
   std::string name;
@@ -27,7 +27,7 @@ const Uniform IDENTITY_VIEW_UNIFORM = Uniform("view", glm::mat4(1.0f));
 const Uniform IDENTITY_PROJECTION_UNIFORM = Uniform("projection", glm::mat4(1.0f));
 using UniformMap = std::unordered_map<std::string, UniformValue>;
 
-namespace Eng {
+namespace Engine {
 
 class Shader {
 public:
@@ -69,4 +69,4 @@ protected:
 private:
     int get_uniform_location(const char *name) const;
 };
-} // namespace Eng
+} // namespace Engine

@@ -46,6 +46,7 @@ struct PointLight {
   float quadratic;
   float radius;
 };
+#define NR_POINT_LIGHTS 4
 
 struct Spotlight {
   vec3 position;

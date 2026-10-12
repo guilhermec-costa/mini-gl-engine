@@ -4,7 +4,7 @@
 
 std::filesystem::path albedopath(const char *path);
 
-namespace Eng {
+namespace Engine {
 
 class Texture2D {
 public:
@@ -27,6 +27,6 @@ private:
 
 }
 
-inline Eng::Texture2D make_texture(const char *path) {
-  return Eng::Texture2D(albedopath(path).c_str());
+inline Engine::Texture2D make_texture(const char *path) {
+  return Engine::Texture2D(albedopath(path).c_str());
 }

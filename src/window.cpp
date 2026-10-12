@@ -2,7 +2,7 @@
 #include "GLFW/glfw3.h"
 #include <iostream>
 
-namespace Eng {
+namespace Engine {
 
 void resizeCallback(GLFWwindow *window, int width, int height) {
   std::cout << "resizing window to w: " << width << " h: " << height << "\n";
@@ -37,4 +37,4 @@ void Window::clear() const {
   glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-} // namespace Eng
+} // namespace Engine

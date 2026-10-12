@@ -5,20 +5,20 @@
 #include "texture2d.hpp"
 #include "window.hpp"
 
-class CubeScene : public Eng::Scene {
+class CubeScene : public Engine::Scene {
 public:
-  CubeScene(Eng::Window * window, Eng::Camera& camera);
+  CubeScene(Engine::Window * window, Engine::Camera& camera);
   void update(float delta) override;
 
 private:
-  std::unique_ptr<Eng::Shader> color_shader;
-  std::unique_ptr<Eng::Shader> texture_shader;
-  Eng::Texture2D texture;
-  std::unique_ptr<Eng::Material> cube_material;
-  std::unique_ptr<Eng::Material> triangle_material;
+  std::unique_ptr<Engine::Shader> color_shader;
+  std::unique_ptr<Engine::Shader> texture_shader;
+  Engine::Texture2D texture;
+  std::unique_ptr<Engine::Material> cube_material;
+  std::unique_ptr<Engine::Material> triangle_material;
 
-  Eng::Mesh cube_mesh;
-  Eng::Mesh triangle_mesh;
-  Eng::RenderObject cube;
-  Eng::RenderObject triangle;
+  Engine::Mesh cube_mesh;
+  Engine::Mesh triangle_mesh;
+  Engine::RenderObject cube;
+  Engine::RenderObject triangle;
 };

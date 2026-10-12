@@ -1,6 +1,6 @@
 #include "material.hpp"
 
-namespace Eng {
+namespace Engine {
 
 void Material::bind() {
   bind_maps();
@@ -109,4 +109,4 @@ void Material::set_emission_intensity(float intensity) {
   patch_uniform("material.light_map.emission_intensity", intensity);
 }
 
-} // namespace Eng
+} // namespace Engine

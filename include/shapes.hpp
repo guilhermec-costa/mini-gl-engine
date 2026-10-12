@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Eng {
+namespace Engine {
   class Triangle {
     ~Triangle();
   };

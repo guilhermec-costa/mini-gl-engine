@@ -4,7 +4,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "mesh.hpp"
 
-namespace Eng {
+namespace Engine {
 
 class Transform {
 public:
@@ -25,10 +25,10 @@ public:
   float rotation_angle{0.0f};
 };
 
-} // namespace Eng
+} // namespace Engine
 
-Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 v4);
-Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
-Eng::Mesh make_cube(const std::vector<float>& data);
-Eng::Mesh make_cube_with_normals(const std::vector<float>& data);
-Eng::Mesh make_sphere(float radius, int stacks, int sectors);
+Engine::Mesh make_quad(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 v4);
+Engine::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
+Engine::Mesh make_cube(const std::vector<float>& data);
+Engine::Mesh make_cube_with_normals(const std::vector<float>& data);
+Engine::Mesh make_sphere(float radius, int stacks, int sectors);

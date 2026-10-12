@@ -2,7 +2,7 @@
 
 #include "glm/common.hpp"
 
-namespace EngTypes {
+namespace EngineTypes {
 
 constexpr float MAX_COLOR = 255.0f;
 constexpr float MIN_COLOR = 0.0f;
@@ -29,4 +29,4 @@ private:
   }
 };
 
-} // namespace EngTypes
+} // namespace EngineTypes

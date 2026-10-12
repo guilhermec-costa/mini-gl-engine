@@ -7,7 +7,7 @@
 #include "window.hpp"
 #include <vector>
 
-namespace Eng {
+namespace Engine {
 
 class Controller {
 public:
@@ -42,4 +42,4 @@ private:
   std::vector<Scene*> scenes;
 };
 
-} // namespace Eng
+} // namespace Engine

@@ -1,7 +1,7 @@
 #include "input.hpp"
 #include "GLFW/glfw3.h"
 
-namespace Eng {
+namespace Engine {
 
 void Input::update() { previous = current; }
 
@@ -41,4 +41,4 @@ bool Input::key_released(int key) const {
   return prev == GLFW_PRESS && current_it->second == GLFW_RELEASE;
 }
 
-} // namespace Eng
+} // namespace Engine

@@ -6,7 +6,7 @@
 #include "glm/ext/vector_float2.hpp"
 #include "mesh.hpp"
 
-namespace Eng {
+namespace Engine {
 
 glm::mat4 Transform::matrix() const {
   glm::mat4 mat = glm::mat4(1.0);
@@ -44,8 +44,8 @@ void Transform::scale(const glm::vec3& factor) {
 }
 }
 
-Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4) {
-  return Eng::Mesh(
+Engine::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4) {
+  return Engine::Mesh(
     std::vector{
       v1.x, v1.y, v1.z, 0.0f, 1.0f,
       v2.x, v2.y, v2.z, 1.0f, 1.0f,
@@ -54,15 +54,15 @@ Eng::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4) {
     },
     {0, 1, 3, 1, 2, 3},
     std::vector{
-      Eng::VertexAttribute(0, 3, 0),
-      Eng::VertexAttribute(1, 2, sizeof(float) * 3)
+      Engine::VertexAttribute(0, 3, 0),
+      Engine::VertexAttribute(1, 2, sizeof(float) * 3)
     },
     4,
     sizeof(float) * 5); 
 }
 
-Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3) {
-  return Eng::Mesh(
+Engine::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3) {
+  return Engine::Mesh(
     std::vector{
       v1.x, v1.y, v1.z, 0.5f, 1.0f,
       v2.x, v2.y, v2.z, 1.0f, 0.0f,
@@ -70,41 +70,41 @@ Eng::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3) {
     },
     {},
     std::vector{
-      Eng::VertexAttribute(0, 3, 0),
-      Eng::VertexAttribute(1, 2, sizeof(float) * 3)
+      Engine::VertexAttribute(0, 3, 0),
+      Engine::VertexAttribute(1, 2, sizeof(float) * 3)
     },
     3,
     sizeof(float) * 5
   );
 }
 
-Eng::Mesh make_cube(const std::vector<float>& data) {
-  return Eng::Mesh(
+Engine::Mesh make_cube(const std::vector<float>& data) {
+  return Engine::Mesh(
     data,
     {},
     std::vector{
-      Eng::VertexAttribute(0, 3, 0),
-      Eng::VertexAttribute(1, 2, sizeof(float) * 3)
+      Engine::VertexAttribute(0, 3, 0),
+      Engine::VertexAttribute(1, 2, sizeof(float) * 3)
     },
     data.size() / 5,
     sizeof(float) * 5);
 }
 
-Eng::Mesh make_cube_with_normals(const std::vector<float>& data) {
-  return Eng::Mesh(
+Engine::Mesh make_cube_with_normals(const std::vector<float>& data) {
+  return Engine::Mesh(
     data,
     {},
     std::vector{
-      Eng::VertexAttribute{0, 3, 0},
-      Eng::VertexAttribute{1, 2, sizeof(float) * 3},
-      Eng::VertexAttribute{2, 3, sizeof(float) * 5},
+      Engine::VertexAttribute{0, 3, 0},
+      Engine::VertexAttribute{1, 2, sizeof(float) * 3},
+      Engine::VertexAttribute{2, 3, sizeof(float) * 5},
     },
     data.size() / 8,
     sizeof(float) * 8
   );
 }
 
-Eng::Mesh make_sphere(float radius, int stack_count, int sector_count) {
+Engine::Mesh make_sphere(float radius, int stack_count, int sector_count) {
   const double PI = std::numbers::pi;
   const float SECTOR_STEP = 2 * PI / sector_count;
   const float STACK_STEP = PI / stack_count;
@@ -195,13 +195,13 @@ Eng::Mesh make_sphere(float radius, int stack_count, int sector_count) {
 
   }
 
-  return Eng::Mesh(
+  return Engine::Mesh(
     raw_data,
     indices,
     std::vector{
-      Eng::VertexAttribute{0, 3, 0},
-      Eng::VertexAttribute{1, 2, sizeof(float) * 3},
-      Eng::VertexAttribute{2, 3, sizeof(float) * 5},
+      Engine::VertexAttribute{0, 3, 0},
+      Engine::VertexAttribute{1, 2, sizeof(float) * 3},
+      Engine::VertexAttribute{2, 3, sizeof(float) * 5},
     },
     raw_data.size() / 8,
     sizeof(float) * 8

@@ -1,6 +1,6 @@
 #include "resource/texture_storage.hpp"
 
-namespace Eng {
+namespace Engine {
 
 TextureStorage& TextureStorage::instance() {
     static TextureStorage storage;

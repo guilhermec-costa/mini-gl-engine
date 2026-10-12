@@ -6,29 +6,29 @@
 #include "shader.hpp"
 #include "window.hpp"
 
-class GeometryScene : public Eng::Scene {
+class GeometryScene : public Engine::Scene {
 public:
-  GeometryScene(Eng::Window *window, Eng::Camera &camera);
+  GeometryScene(Engine::Window *window, Engine::Camera &camera);
   void update(float delta) override;
 
 private:
-  std::unique_ptr<Eng::Shader> color_shader;
+  std::unique_ptr<Engine::Shader> color_shader;
 
-  std::unique_ptr<Eng::Material> red_material;
-  std::unique_ptr<Eng::Material> green_material;
-  std::unique_ptr<Eng::Material> blue_material;
-  std::unique_ptr<Eng::Material> yellow_material;
+  std::unique_ptr<Engine::Material> red_material;
+  std::unique_ptr<Engine::Material> green_material;
+  std::unique_ptr<Engine::Material> blue_material;
+  std::unique_ptr<Engine::Material> yellow_material;
 
   // meshes
-  Eng::Mesh triangle_mesh;
-  Eng::Mesh quad_mesh;
+  Engine::Mesh triangle_mesh;
+  Engine::Mesh quad_mesh;
 
   // triangles
-  Eng::RenderObject triangle_left;
-  Eng::RenderObject triangle_center;
-  Eng::RenderObject triangle_right;
+  Engine::RenderObject triangle_left;
+  Engine::RenderObject triangle_center;
+  Engine::RenderObject triangle_right;
 
   // quads
-  Eng::RenderObject quad_left;
-  Eng::RenderObject quad_right;
+  Engine::RenderObject quad_left;
+  Engine::RenderObject quad_right;
 };

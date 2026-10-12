@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-namespace Eng {
+namespace Engine {
 
 class Input {
 public:

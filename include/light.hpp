@@ -3,7 +3,7 @@
 
 #include "glm/ext/vector_float3.hpp"
 
-namespace Eng {
+namespace Engine {
 
 class DirectionalLight {
 public:

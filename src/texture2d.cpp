@@ -7,7 +7,7 @@ std::filesystem::path albedopath(const char *path) {
   return std::filesystem::path(ALBEDO_PATH) / path;
 }
 
-namespace Eng {
+namespace Engine {
 
 Texture2D::Texture2D(const char *path) 
 : repeat_x_mode(GL_REPEAT), repeat_y_mode(GL_REPEAT) {
