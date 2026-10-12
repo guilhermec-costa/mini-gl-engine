@@ -14,6 +14,7 @@ public:
 public:
   Window(uint16_t w, uint16_t h, const char *title);
   Window(const Window &) = delete;
+  Window& operator=(Window& other) = delete;
   ~Window();
 
   inline bool created() const { return _window != NULL; }

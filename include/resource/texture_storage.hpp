@@ -10,7 +10,8 @@ enum class TextureId {
   MedievalBoxSpecular,
   WoodFace,
   Matrix,
-  Earth
+  Earth,
+  Sun
 };
 
 namespace Engine {

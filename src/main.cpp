@@ -7,6 +7,7 @@
 #include "imgui_impl_opengl3.h"
 #include "renderer.hpp"
 #include "macros.hpp"
+#include "resource/shader_storage.hpp"
 #include "resource/texture_storage.hpp"
 #include "window.hpp"
 #include "imgui.h"
@@ -59,7 +60,7 @@ int main(int argc, char* argv[]) {
     Renderer renderer = Renderer();
     Input input_handler = Input();
 
-    window.set_clear_color({1.0f, 0.0f, 0.0f, 1.0f, true});
+    window.set_clear_color({.0f, .0f, .0f, 1.f, false});
 
     TEXTURES.load(TextureId::StoneWall, "wall.jpg");
     TEXTURES.load(TextureId::MedievalBoxDiffuse, "wood_square.png");
@@ -67,6 +68,9 @@ int main(int argc, char* argv[]) {
     TEXTURES.load(TextureId::Matrix, "matrix.jpg");
     TEXTURES.load(TextureId::MedievalBoxSpecular, "box_specular_map.png");
     TEXTURES.load(TextureId::Earth, "earth.jpeg");
+    TEXTURES.load(TextureId::Sun, "sun.jpg");
+  
+    SHADERS.load(ShaderId::Base, "base/base_vertex.glsl", "base/base_fragment.glsl");
 
     Controller ctrl = Controller(&window, &renderer, &input_handler);
     ctrl.loop();

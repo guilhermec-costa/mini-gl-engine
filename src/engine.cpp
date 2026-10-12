@@ -10,6 +10,7 @@
 #include "scenes/cube_scene.hpp"
 #include "meshes/cube_test.hpp"
 #include "scenes/light_scene.hpp"
+#include "scenes/solar_system.hpp"
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -110,8 +111,10 @@ void Controller::loop() {
     0.1f, 100.f
   );
 
-  auto light_scene = LightScene(_window, main_camera);
-  scenes.push_back(&light_scene);
+  //auto light_scene = LightScene(_window, main_camera);
+  //scenes.push_back(&light_scene);
+  auto solar_system = SolarSystem(_window, main_camera);
+  scenes.push_back(&solar_system);
 
   const float TARGET_FPS = 120;
   const float TARGET_DELTA_TIME = 1.0 / TARGET_FPS;
