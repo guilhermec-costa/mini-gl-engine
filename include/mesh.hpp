@@ -35,8 +35,6 @@ public:
   Mesh(Mesh&& other) noexcept;
   Mesh& operator=(Mesh&& other) noexcept;
 
-  void set_material(Material* material);
-  Material* get_material() const;
   unsigned int get_VAO() const;
   size_t get_vertex_count() const;
   size_t get_index_count() const;

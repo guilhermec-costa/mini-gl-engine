@@ -13,6 +13,8 @@ find_package(OpenGL REQUIRED)
 
 include(FetchContent)
 
+# GLFW
+
 FetchContent_Declare(
   glfw
   GIT_REPOSITORY https://github.com/glfw/glfw.git
@@ -21,6 +23,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(glfw)
 
+# GLM
 FetchContent_Declare(
 	glm
 	GIT_REPOSITORY	https://github.com/g-truc/glm.git
@@ -28,6 +31,23 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(glm)
+
+# ASSIMP
+
+FetchContent_Declare(
+    assimp
+    GIT_REPOSITORY https://github.com/assimp/assimp.git
+    GIT_TAG v5.4.3
+)
+
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)     # no CLI 
+set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)                # no need to install on system, only FetchContent 
+set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE)              # no zlib need
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)             # dynamic lib 
+
+FetchContent_MakeAvailable(assimp)
 
 FetchContent_Declare(
     imgui
@@ -63,4 +83,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   OpenGL::GL
   glm::glm
   imgui
+  assimp
 )
