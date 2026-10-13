@@ -71,7 +71,7 @@ void Controller::render() {
   _renderer->reset_stats();
   _window->clear();
   for(Scene* scene : scenes) {
-    _renderer->render(*scene);
+    _renderer->render_scene(*scene);
   }
 }
 

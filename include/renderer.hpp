@@ -15,7 +15,7 @@ class Renderer {
 public:
   Renderer();
   void draw(const RenderObject& object, const Camera& camera);
-  void render(Scene& scene);
+  void render_scene(Scene& scene);
   void reset_stats();
   int get_triangle() const;
   int get_draw_call_count() const;

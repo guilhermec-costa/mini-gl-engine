@@ -45,7 +45,7 @@ set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)     # no CLI
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)                # no need to install on system, only FetchContent 
 set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE)              # no zlib need
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)             # dynamic lib 
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)             # static lib
 
 FetchContent_MakeAvailable(assimp)
 

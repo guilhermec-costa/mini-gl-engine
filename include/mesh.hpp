@@ -39,6 +39,9 @@ public:
   size_t get_vertex_count() const;
   size_t get_index_count() const;
 
+public:
+  Material* material;
+
 private:
   uint _VAO, _VBO, _EBO;
   size_t vertex_count;
