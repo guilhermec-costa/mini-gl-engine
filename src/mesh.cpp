@@ -39,10 +39,14 @@ Mesh::Mesh(const std::vector<float> &raw_data,
 
 Mesh::Mesh(Mesh &&other) noexcept
     : _VAO(other._VAO), _VBO(other._VBO), _EBO(other._EBO),
-      vertex_count(other.vertex_count), index_count(other.index_count) {
+      vertex_count(other.vertex_count), index_count(other.index_count),
+      material(other.material) {
   other._VAO = 0;
   other._VBO = 0;
   other._EBO = 0;
+  other.vertex_count = 0;
+  other.index_count = 0;
+  other.material = nullptr;
 }
 
 Mesh &Mesh::operator=(Mesh &&other) noexcept {
@@ -56,11 +60,13 @@ Mesh &Mesh::operator=(Mesh &&other) noexcept {
     _EBO = other._EBO;
     vertex_count = other.vertex_count;
     index_count = other.index_count;
+    material = other.material;
     other._VAO = 0;
     other._VBO = 0;
     other._EBO = 0;
     other.vertex_count = 0;
     other.index_count = 0;
+    other.material = nullptr;
   }
 
   return *this;

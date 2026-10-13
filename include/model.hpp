@@ -3,6 +3,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "material.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
 #include <memory>
@@ -12,12 +13,17 @@ namespace Engine {
 
 class Model {
 public:
-  explicit Model(const std::string& path, Shader& shader);
+  Model(const std::string& path, Shader& shader);
+  std::vector<Mesh>& get_meshes() {
+    return meshes;
+  };
+
 
 private:
   void load_model(const std::string& path);
   void process_node(aiNode* node, const aiScene* scene);
   Mesh process_mesh(aiMesh* mesh, const aiScene* scene);
+
   std::unique_ptr<Material> process_material(
     aiMaterial* material, 
     const std::string& directory

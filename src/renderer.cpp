@@ -12,7 +12,9 @@ Renderer::Renderer() {
 }
 
 void Renderer::draw(const RenderObject& object, const Camera& camera) {
-  Material* material = object.material;
+  Material* material = object.mesh->material ? 
+    object.mesh->material : object.material;
+
   if(material) {
     material->shader.patch_uniform("model", object.transform.matrix());
     material->shader.patch_uniform("view", camera.view_matrix());

@@ -1,6 +1,9 @@
 #include "model.hpp"
 #include "assimp/material.h"
+#include "assimp/types.h"
+#include "macros.hpp"
 #include "material.hpp"
+#include "texture2d.hpp"
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -13,8 +16,9 @@ Model::Model(const std::string &path, Shader &s) : shader(s) {
 
 void Model::load_model(const std::string &path) {
   Assimp::Importer importer;
-  const aiScene *scene = importer.ReadFile(path.c_str(), aiProcess_Triangulate |
-                                                             aiProcess_FlipUVs);
+  const aiScene *scene = importer.ReadFile(
+      path.c_str(),
+      aiProcess_Triangulate | aiProcess_GenSmoothNormals);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !scene->mRootNode) {
@@ -26,10 +30,8 @@ void Model::load_model(const std::string &path) {
   directory = path.substr(0, path.find_last_of('/'));
   materials.reserve(scene->mNumMaterials);
 
-  for(size_t m = 0; m<scene->mNumMaterials; ++m) {
-    materials.push_back(
-      process_material(scene->mMaterials[m], directory)
-    );
+  for (size_t m = 0; m < scene->mNumMaterials; ++m) {
+    materials.push_back(process_material(scene->mMaterials[m], directory));
   }
   process_node(scene->mRootNode, scene);
 };
@@ -101,10 +103,66 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
   return result_mesh;
 }
 
-std::unique_ptr<Material> Model::process_material(aiMaterial* ai_material, const std::string& directory) {
-  auto mat = std::make_unique<Material>(shader);
+std::unique_ptr<Material>
+Model::process_material(aiMaterial *ai_material, const std::string &directory) {
+  auto material = std::make_unique<Material>(shader);
+  aiColor3D ambient(1.0f, 1.0f, 1.0f);
+  aiColor3D diffuse(1.0f, 1.0f, 1.0f);
+  aiColor3D specular(1.0f, 1.0f, 1.0f);
+  float shininess = 32.0f;
 
-  if(ai_material->GetTextureCount())
+  if(ai_material->Get(AI_MATKEY_COLOR_AMBIENT, ambient) == AI_SUCCESS) {
+    material->set_ambient({
+      ambient.r,
+      ambient.g,
+      ambient.b
+    });
+  }
+
+  if (ai_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse) == AI_SUCCESS) {
+    material->set_diffuse({
+      diffuse.r,
+      diffuse.g,
+      diffuse.b
+    });
+  }
+
+  if (ai_material->Get(AI_MATKEY_COLOR_SPECULAR, specular) == AI_SUCCESS) {
+    material->set_specular({
+      specular.r,
+      specular.g,
+      specular.b
+    });
+  }
+
+  if(ai_material->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS) {
+    material->set_shininess(shininess);
+  }
+
+  if (ai_material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+    aiString tex_path;
+
+    if (ai_material->GetTexture(aiTextureType_DIFFUSE, 0, &tex_path) ==
+        AI_SUCCESS) {
+      std::string full_path = directory + "/" + tex_path.C_Str();
+      Texture2D &tex = TEXTURES.load(full_path);
+
+      material->set_diffuse_map(&tex);
+    }
+  }
+
+  if (ai_material->GetTextureCount(aiTextureType_SPECULAR) > 0) {
+    aiString tex_path;
+
+    if (ai_material->GetTexture(aiTextureType_SPECULAR, 0, &tex_path) ==
+        AI_SUCCESS) {
+      std::string full_path = directory + "/" + tex_path.C_Str();
+      Texture2D &tex = TEXTURES.load(full_path);
+      material->set_specular_map(&tex);
+    }
+  }
+
+  return material;
 }
 
 } // namespace Engine

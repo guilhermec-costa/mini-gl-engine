@@ -38,7 +38,8 @@ public:
   Shader &operator=(Shader &&other) noexcept; // move assignment operator
   static std::expected<Shader, const char *> create(const char *vertex_path,
                                                     const char *frag_path);
-  
+ 
+  unsigned int get_program_id() const;
   template<typename T>
   T get_uniform(std::string name) const;
   void add_uniform(std::string name, UniformValue value);

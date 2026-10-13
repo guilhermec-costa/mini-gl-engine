@@ -188,6 +188,10 @@ void Shader::patch_uniform(std::string name, UniformValue new_value) {
 }
 
 
+unsigned int Shader::get_program_id() const {
+  return _program_id;
+}
+
 int Shader::get_uniform_location(const char* name) const {
   return glGetUniformLocation(_program_id, name);
 }

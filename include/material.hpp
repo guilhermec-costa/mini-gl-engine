@@ -36,7 +36,7 @@ public:
   bool use_diffuse_map = false;
   bool use_emission_map = false;
   Shader& shader;
-  glm::vec3 ambient_light;
+  glm::vec3 ambient;
   Texture2D* diffuse_map = nullptr;
   Texture2D* specular_map = nullptr;
   Texture2D* emission_map = nullptr;
