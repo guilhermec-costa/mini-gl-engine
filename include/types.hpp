@@ -18,15 +18,17 @@ struct Color {
   float a = 1.0;
 
   Color() = default;
-  Color(float r, float g, float b, float a, bool norm=false)
-      : r(norm ? normalize(r) : r), g(norm ? normalize(g) : g),
-        b(norm ? normalize(b) : b), a(norm ? normalize(a) : a) {}
+  Color(float r, float g, float b, float a, bool norm = false)
+      : r(norm ? normalize(r) : r),
+        g(norm ? normalize(g) : g),
+        b(norm ? normalize(b) : b),
+        a(norm ? normalize(a) : a) {}
 
-private:
+ private:
   float normalize(float v) const {
     const float clamped_color = glm::clamp<float>(v, MIN_COLOR, MAX_COLOR);
     return clamped_color / MAX_COLOR;
   }
 };
 
-} // namespace EngineTypes
+}  // namespace EngineTypes

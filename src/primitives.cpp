@@ -1,7 +1,10 @@
 #include "primitives.hpp"
+
 #include <vendor/glad/glad.h>
+
 #include <numbers>
 #include <ostream>
+
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "mesh.hpp"
@@ -17,13 +20,9 @@ glm::mat4 Transform::matrix() const {
   return mat;
 }
 
-void Transform::set_position(const glm::vec3& pos) {
-  position = pos;
-}
+void Transform::set_position(const glm::vec3& pos) { position = pos; }
 
-void Transform::move(const glm::vec3& offset) {
-  position += offset;
-};
+void Transform::move(const glm::vec3& offset) { position += offset; };
 
 void Transform::rotate(float angle, const glm::vec3& axis) {
   rotation_angle += angle;
@@ -35,73 +34,63 @@ void Transform::set_rotate(float angle, const glm::vec3& axis) {
   rotation_axis = glm::normalize(axis);
 }
 
-void Transform::set_scale(const glm::vec3& factor) {
-  scale_factor = factor;
-}
+void Transform::set_scale(const glm::vec3& factor) { scale_factor = factor; }
 
-void Transform::scale(const glm::vec3& factor) {
-  scale_factor *= factor;
-}
-}
+void Transform::scale(const glm::vec3& factor) { scale_factor *= factor; }
+}  // namespace Engine
 
-Engine::Mesh make_quad(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3, glm::vec3 v4) {
+Engine::Mesh make_quad(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 v4) {
   return Engine::Mesh(
-    std::vector{
-      v1.x, v1.y, v1.z, 0.0f, 1.0f,
-      v2.x, v2.y, v2.z, 1.0f, 1.0f,
-      v3.x, v3.y, v3.z, 1.0f, 0.0f,
-      v4.x, v4.y, v4.z, 0.0f, 0.0f,
-    },
-    {0, 1, 3, 1, 2, 3},
-    std::vector{
-      Engine::VertexAttribute(0, 3, 0),
-      Engine::VertexAttribute(1, 2, sizeof(float) * 3)
-    },
-    4,
-    sizeof(float) * 5); 
+      std::vector{
+          v1.x, v1.y, v1.z, 0.0f, 1.0f, v2.x, v2.y, v2.z, 1.0f, 1.0f,
+          v3.x, v3.y, v3.z, 1.0f, 0.0f, v4.x, v4.y, v4.z, 0.0f, 0.0f,
+      },
+      {0, 1, 3, 1, 2, 3},
+      std::vector{Engine::VertexAttribute(0, 3, 0),
+                  Engine::VertexAttribute(1, 2, sizeof(float) * 3)},
+      4, sizeof(float) * 5);
 }
 
-Engine::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3) {
+Engine::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3) {
   return Engine::Mesh(
-    std::vector{
-      v1.x, v1.y, v1.z, 0.5f, 1.0f,
-      v2.x, v2.y, v2.z, 1.0f, 0.0f,
-      v3.x, v3.y, v3.z, 0.0f, 0.0f,
-    },
-    {},
-    std::vector{
-      Engine::VertexAttribute(0, 3, 0),
-      Engine::VertexAttribute(1, 2, sizeof(float) * 3)
-    },
-    3,
-    sizeof(float) * 5
-  );
+      std::vector{
+          v1.x,
+          v1.y,
+          v1.z,
+          0.5f,
+          1.0f,
+          v2.x,
+          v2.y,
+          v2.z,
+          1.0f,
+          0.0f,
+          v3.x,
+          v3.y,
+          v3.z,
+          0.0f,
+          0.0f,
+      },
+      {},
+      std::vector{Engine::VertexAttribute(0, 3, 0),
+                  Engine::VertexAttribute(1, 2, sizeof(float) * 3)},
+      3, sizeof(float) * 5);
 }
 
 Engine::Mesh make_cube(const std::vector<float>& data) {
-  return Engine::Mesh(
-    data,
-    {},
-    std::vector{
-      Engine::VertexAttribute(0, 3, 0),
-      Engine::VertexAttribute(1, 2, sizeof(float) * 3)
-    },
-    data.size() / 5,
-    sizeof(float) * 5);
+  return Engine::Mesh(data, {},
+                      std::vector{Engine::VertexAttribute(0, 3, 0),
+                                  Engine::VertexAttribute(1, 2, sizeof(float) * 3)},
+                      data.size() / 5, sizeof(float) * 5);
 }
 
 Engine::Mesh make_cube_with_normals(const std::vector<float>& data) {
-  return Engine::Mesh(
-    data,
-    {},
-    std::vector{
-      Engine::VertexAttribute{0, 3, 0},
-      Engine::VertexAttribute{1, 2, sizeof(float) * 3},
-      Engine::VertexAttribute{2, 3, sizeof(float) * 5},
-    },
-    data.size() / 8,
-    sizeof(float) * 8
-  );
+  return Engine::Mesh(data, {},
+                      std::vector{
+                          Engine::VertexAttribute{0, 3, 0},
+                          Engine::VertexAttribute{1, 2, sizeof(float) * 3},
+                          Engine::VertexAttribute{2, 3, sizeof(float) * 5},
+                      },
+                      data.size() / 8, sizeof(float) * 8);
 }
 
 Engine::Mesh make_sphere(float radius, int stack_count, int sector_count) {
@@ -122,13 +111,13 @@ Engine::Mesh make_sphere(float radius, int stack_count, int sector_count) {
   std::vector<float> uvs;
   std::vector<float> normals;
 
-  for(size_t st = 0; st<= stack_count; ++st) {
-    stack_angle = PI / 2 - st * STACK_STEP; //  from PI/2 to -PI/2
+  for (size_t st = 0; st <= stack_count; ++st) {
+    stack_angle = PI / 2 - st * STACK_STEP;  //  from PI/2 to -PI/2
     stack_radius = radius * cosf(stack_angle);
-    pos.z = radius * sinf(stack_angle); // considering z as the vertical axis
+    pos.z = radius * sinf(stack_angle);  // considering z as the vertical axis
 
-    for(size_t se = 0; se<= sector_count; ++se) {
-      sector_angle = se * SECTOR_STEP; // from 0 to 2PI
+    for (size_t se = 0; se <= sector_count; ++se) {
+      sector_angle = se * SECTOR_STEP;  // from 0 to 2PI
       pos.x = stack_radius * cosf(sector_angle);
       pos.y = stack_radius * sinf(sector_angle);
       positions.push_back(pos.x);
@@ -152,24 +141,24 @@ Engine::Mesh make_sphere(float radius, int stack_count, int sector_count) {
   std::vector<unsigned int> indices;
   int k1, k2;
 
-  for(size_t st=0; st < stack_count; ++st) {
+  for (size_t st = 0; st < stack_count; ++st) {
     k1 = st * (sector_count + 1);
     k2 = k1 + sector_count + 1;
 
-    for(size_t se = 0; se < sector_count; ++se, ++k1, ++k2) {
+    for (size_t se = 0; se < sector_count; ++se, ++k1, ++k2) {
       // 2 triangles per sector excluding first and last stacks
-      if(st != 0) {
+      if (st != 0) {
         // k1 => k2 => k1+1
         indices.push_back(k1);
         indices.push_back(k2);
         indices.push_back(k1 + 1);
       }
 
-      if(st != (stack_count - 1)) {
+      if (st != (stack_count - 1)) {
         // k1+1 => k2 => k2+1
-        indices.push_back(k1+1);
+        indices.push_back(k1 + 1);
         indices.push_back(k2);
-        indices.push_back(k2+1);
+        indices.push_back(k2 + 1);
       }
     }
   }
@@ -178,7 +167,7 @@ Engine::Mesh make_sphere(float radius, int stack_count, int sector_count) {
   const size_t vertex_count = positions.size() / 3;
   raw_data.reserve(vertex_count * 8);
 
-  for(size_t i=0; i < vertex_count; ++i) {
+  for (size_t i = 0; i < vertex_count; ++i) {
     int pos_offset = i * 3;
     raw_data.push_back(positions[pos_offset]);
     raw_data.push_back(positions[pos_offset + 1]);
@@ -192,20 +181,15 @@ Engine::Mesh make_sphere(float radius, int stack_count, int sector_count) {
     raw_data.push_back(normals[normal_offset]);
     raw_data.push_back(normals[normal_offset + 1]);
     raw_data.push_back(normals[normal_offset + 2]);
-
   }
 
-  return Engine::Mesh(
-    raw_data,
-    indices,
-    std::vector{
-      Engine::VertexAttribute{0, 3, 0},
-      Engine::VertexAttribute{1, 2, sizeof(float) * 3},
-      Engine::VertexAttribute{2, 3, sizeof(float) * 5},
-    },
-    raw_data.size() / 8,
-    sizeof(float) * 8
-  );
+  return Engine::Mesh(raw_data, indices,
+                      std::vector{
+                          Engine::VertexAttribute{0, 3, 0},
+                          Engine::VertexAttribute{1, 2, sizeof(float) * 3},
+                          Engine::VertexAttribute{2, 3, sizeof(float) * 5},
+                      },
+                      raw_data.size() / 8, sizeof(float) * 8);
 }
 
 std::ostream& operator<<(std::ostream& os, glm::vec3 v) {

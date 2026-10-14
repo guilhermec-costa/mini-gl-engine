@@ -1,5 +1,7 @@
-#include <vendor/glad/glad.h>
 #include "scenes/cube_scene.hpp"
+
+#include <iostream>
+
 #include "GLFW/glfw3.h"
 #include "color_shader.hpp"
 #include "material.hpp"
@@ -8,23 +10,22 @@
 #include "scene.hpp"
 #include "shader.hpp"
 #include "texture2d.hpp"
-#include <iostream>
 
 CubeScene::CubeScene(Engine::Window* window, Engine::Camera& camera) : Engine::Scene(camera) {
-  auto _texture_shader = Engine::Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
-  if(!_texture_shader) {
+  auto _texture_shader =
+      Engine::Shader::create(shaderpath("vertex.glsl").c_str(), shaderpath("frag.glsl").c_str());
+  if (!_texture_shader) {
     std::cout << _texture_shader.error() << std::endl;
     return;
   }
   texture_shader = std::make_unique<Engine::Shader>(std::move(*_texture_shader));
-  texture = Engine::Texture2D(albedopath("wood.jpg").c_str());
+  texture = Engine::Texture2D(texturepath("wood.jpg").c_str());
   cube_material = std::make_unique<Engine::Material>(*texture_shader);
   cube_mesh = make_cube(cube_test_mesh);
   cube = Engine::RenderObject(&cube_mesh, cube_material.get());
 
   auto _color_shader = Engine::ColorShader::create_color_shader(
-      shaderpath("frag_base_color.glsl").c_str(),
-      EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
+      shaderpath("frag_base_color.glsl").c_str(), EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
 
   if (!_color_shader) {
     std::cout << _color_shader.error() << std::endl;
@@ -32,11 +33,8 @@ CubeScene::CubeScene(Engine::Window* window, Engine::Camera& camera) : Engine::S
   }
   color_shader = std::make_unique<Engine::Shader>(std::move(*_color_shader));
   triangle_material = std::make_unique<Engine::Material>(*color_shader);
-  triangle_mesh = make_triangle(
-      glm::vec3(0.8f,  0.5f, -0.8f),
-      glm::vec3(1.0f, -0.5f, -0.8f),
-      glm::vec3(0.3f, -0.5f, -0.8f)
-  );
+  triangle_mesh = make_triangle(glm::vec3(0.8f, 0.5f, -0.8f), glm::vec3(1.0f, -0.5f, -0.8f),
+                                glm::vec3(0.3f, -0.5f, -0.8f));
   triangle = Engine::RenderObject(&triangle_mesh, triangle_material.get());
 
   objects.push_back(&triangle);

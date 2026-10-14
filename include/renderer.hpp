@@ -1,7 +1,8 @@
 #pragma once
 
+#include <vendor/glad/glad.h>
+
 #include "scene.hpp"
-#include <GL/gl.h>
 
 namespace Engine {
 
@@ -12,7 +13,7 @@ struct RenderMetadata {
 };
 
 class Renderer {
-public:
+ public:
   Renderer();
   void draw(const RenderObject& object, const Camera& camera);
   void render_scene(Scene& scene);
@@ -21,9 +22,9 @@ public:
   int get_draw_call_count() const;
   RenderMetadata get_metadata() const;
 
-private:
+ private:
   int triangle_count = 0;
   int draw_call_count = 0;
 };
 
-}
+}  // namespace Engine

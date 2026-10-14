@@ -1,49 +1,52 @@
 #include "resource/texture_storage.hpp"
+
+#include <stdexcept>
+
 #include "texture2d.hpp"
 
 namespace Engine {
 
 TextureStorage& TextureStorage::instance() {
-    static TextureStorage storage;
-    return storage;
-  }
-
-Texture2D& TextureStorage::load(const TextureId id, const std::string &path) {
-  Texture2D* stored = get(id);
-  if(stored) 
-    return *stored;
-
-  auto tex = std::make_unique<Texture2D>(make_texture(path.c_str()));
-  auto& ref = *tex;
-  textures[id] = std::move(tex);
-  return ref;
+  static TextureStorage storage;
+  return storage;
 }
 
 Texture2D& TextureStorage::load(const std::string& path) {
   Texture2D* stored = get(path);
-  if(stored) 
-    return *stored;
+  if (stored) return *stored;
 
   auto tex = std::make_unique<Texture2D>(make_texture(path.c_str()));
   auto& ref = *tex;
-  imported_textures[path] = std::move(tex);
+  textures[path] = std::move(tex);
   return ref;
 }
 
-Texture2D* TextureStorage::get(const TextureId id) const {
-  auto it = textures.find(id);
-  if(it == textures.end()) {
-    return nullptr;
+Texture2D& TextureStorage::load(const std::string& key, const aiTexture* embedded) {
+  Texture2D* stored = get(key);
+  if (stored) return *stored;
+
+  int width, height, channels;
+  unsigned char* data = nullptr;
+
+  std::unique_ptr<Texture2D> texture;
+
+  if (embedded->mHeight == 0) {
+    texture = std::make_unique<Texture2D>(reinterpret_cast<const unsigned char*>(embedded->pcData),
+                                          static_cast<int>(embedded->mWidth));
+  } else {
+    texture = std::make_unique<Texture2D>(embedded->pcData, embedded->mWidth, embedded->mHeight);
   }
-  return it->second.get();
+
+  Texture2D& ref = *texture;
+  textures[key] = std::move(texture);
+  return ref;
 }
 
 Texture2D* TextureStorage::get(const std::string& path) const {
-  auto it = imported_textures.find(path);
-  if(it == imported_textures.end()) 
-    return nullptr;
+  auto it = textures.find(path);
+  if (it == textures.end()) return nullptr;
 
   return it->second.get();
 }
 
-}
+}  // namespace Engine

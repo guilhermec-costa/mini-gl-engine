@@ -1,5 +1,9 @@
-#include <cmath>
 #include <vendor/glad/glad.h>
+
+#include <cmath>
+#include <iostream>
+#include <ostream>
+
 #include "color_shader.hpp"
 #include "light.hpp"
 #include "macros.hpp"
@@ -9,14 +13,10 @@
 #include "scene.hpp"
 #include "scenes/light_scene.hpp"
 #include "shader.hpp"
-#include <iostream>
-#include <ostream>
 
-LightScene::LightScene(Engine::Window *window, Engine::Camera &camera)
-    : Engine::Scene(camera) {
+LightScene::LightScene(Engine::Window* window, Engine::Camera& camera) : Engine::Scene(camera) {
   auto object_shader = Engine::ColorShader::create_color_shader(
-      shaderpath("object_light.glsl").c_str(),
-      EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
+      shaderpath("object_light.glsl").c_str(), EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
   if (!object_shader) {
     std::cout << object_shader.error() << std::endl;
     return;
@@ -24,8 +24,7 @@ LightScene::LightScene(Engine::Window *window, Engine::Camera &camera)
   box_shader = std::make_unique<Engine::Shader>(std::move(*object_shader));
 
   auto light_shader = Engine::ColorShader::create_color_shader(
-      shaderpath("frag_base_color.glsl").c_str(),
-      EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
+      shaderpath("frag_base_color.glsl").c_str(), EngineTypes::Color{1.0f, 0.5f, 0.0f, 1.0f});
   if (!light_shader) {
     std::cout << light_shader.error() << std::endl;
     return;
@@ -45,9 +44,9 @@ LightScene::LightScene(Engine::Window *window, Engine::Camera &camera)
   cube = Engine::RenderObject(&cube_mesh, cube_material.get());
   cube.transform.set_position({-0.8f, 0.2f, -0.1f});
   cube.transform.set_scale({0.6f, 0.6f, 0.6f});
-  cube.material->set_diffuse_map(TEXTURES.get(TextureId::MedievalBoxDiffuse));
-  cube.material->set_specular_map(TEXTURES.get(TextureId::MedievalBoxSpecular));
-  cube.material->set_emission_map(TEXTURES.get(TextureId::Matrix));
+  cube.material->set_diffuse_map(TEXTURES.get(texturepath("wood_square.png")));
+  cube.material->set_specular_map(TEXTURES.get(texturepath("box_specular_map.png")));
+  cube.material->set_emission_map(TEXTURES.get(texturepath("matrix.jpg")));
   cube.material->set_emission_intensity(2.0f);
 
   cube2 = Engine::RenderObject(&cube_mesh, cube2_material.get());
@@ -69,8 +68,10 @@ LightScene::LightScene(Engine::Window *window, Engine::Camera &camera)
   sphere = Engine::RenderObject(&sphere_mesh, sphere_material.get());
   sphere.transform.set_position({-0.1f, 0.45f, -1.f});
   sphere.transform.set_scale({1.f, 1.f, 1.f});
-  sphere.material->set_diffuse_map(TEXTURES.get(TextureId::Earth));
-  sphere.material->set_specular_map(TEXTURES.get(TextureId::Earth));
+
+  auto* earth_tex = TEXTURES.get(texturepath("earth.jpeg"));
+  sphere.material->set_diffuse_map(earth_tex);
+  sphere.material->set_specular_map(earth_tex);
 
   lamp_material = std::make_unique<Engine::Material>(*lamp_shader);
   lamp = Engine::RenderObject{&sphere_mesh, lamp_material.get()};
@@ -81,32 +82,32 @@ LightScene::LightScene(Engine::Window *window, Engine::Camera &camera)
   point_light.position = lamp.transform.position;
   point_light.radius = 6.0f;
 
-  point_light.ambient  = {0.05f, 0.05f, 0.05f};
-  point_light.diffuse  = {0.8f, 0.8f, 0.8f};
+  point_light.ambient = {0.05f, 0.05f, 0.05f};
+  point_light.diffuse = {0.8f, 0.8f, 0.8f};
   point_light.specular = {1.0f, 1.0f, 1.0f};
 
-  point_light.constant  = 1.0f;
-  point_light.linear    = 0.09f;
+  point_light.constant = 1.0f;
+  point_light.linear = 0.09f;
   point_light.quadratic = 0.032f;
 
   directional_light = Engine::DirectionalLight();
   directional_light.direction = {-0.2f, -1.0f, -0.3f};
-  directional_light.ambient  = {0.08f, 0.015f, 0.015f};
-  directional_light.diffuse  = {0.7f, 0.15f, 0.12f};
+  directional_light.ambient = {0.08f, 0.015f, 0.015f};
+  directional_light.diffuse = {0.7f, 0.15f, 0.12f};
   directional_light.specular = {0.8f, 0.25f, 0.2f};
 
   spotlight = Engine::Spotlight();
   spotlight.position = camera.position;
   spotlight.direction = camera.front;
 
-  spotlight.ambient  = {0.0f, 0.0f, 0.0f};
-  spotlight.diffuse  = {1.0f, 1.0f, 1.0f};
+  spotlight.ambient = {0.0f, 0.0f, 0.0f};
+  spotlight.diffuse = {1.0f, 1.0f, 1.0f};
   spotlight.specular = {1.0f, 1.0f, 1.0f};
 
-  spotlight.constant  = 1.0f;
-  spotlight.linear    = 0.09f;
+  spotlight.constant = 1.0f;
+  spotlight.linear = 0.09f;
   spotlight.quadratic = 0.032f;
-  spotlight.radius    = 6.0f;
+  spotlight.radius = 6.0f;
 
   spotlight.cut_off = glm::cos(glm::radians(12.5f));
   spotlight.outer_cut_off = glm::cos(glm::radians(20.5));
@@ -136,7 +137,7 @@ LightScene::LightScene(Engine::Window *window, Engine::Camera &camera)
   cube5_material->set_specular({0.6f, 0.6f, 0.6f});
   cube5_material->set_ambient({0.8f, 0.1f, 1.0f});
   cube5_material->set_diffuse({0.6f, 0.2f, 0.9f});
-  cube5_material->set_shininess(32.0f); 
+  cube5_material->set_shininess(32.0f);
 
   box_shader->patch_uniform("view_pos", camera.position);
 
@@ -156,11 +157,7 @@ void LightScene::update(float delta) {
   float speed = 2.0f;
   float radius = 2.5f;
 
-  glm::vec3 light_pos = {
-      sinf(time * speed) * radius,
-      1.0f,
-      cosf(time * speed) * radius
-  };
+  glm::vec3 light_pos = {sinf(time * speed) * radius, 1.0f, cosf(time * speed) * radius};
 
   lamp_material->patch_uniform("color", point_light.diffuse);
   lamp.transform.set_position(light_pos);

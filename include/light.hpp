@@ -1,15 +1,14 @@
-#pragma once 
-
+#pragma once
 
 #include "glm/ext/vector_float3.hpp"
 
 namespace Engine {
 
 class DirectionalLight {
-public:
+ public:
   DirectionalLight() = default;
 
-public:
+ public:
   glm::vec3 direction;
   glm::vec3 ambient;
   glm::vec3 diffuse;
@@ -17,10 +16,10 @@ public:
 };
 
 class PointLight {
-public:
+ public:
   PointLight() = default;
 
-public:
+ public:
   glm::vec3 position;
   glm::vec3 ambient;
   glm::vec3 diffuse;
@@ -33,10 +32,10 @@ public:
 };
 
 class Spotlight {
-public:
+ public:
   Spotlight() = default;
 
-public:
+ public:
   glm::vec3 position;
   glm::vec3 direction;
   glm::vec3 ambient;
@@ -51,4 +50,4 @@ public:
   float outer_cut_off;
 };
 
-}
+}  // namespace Engine

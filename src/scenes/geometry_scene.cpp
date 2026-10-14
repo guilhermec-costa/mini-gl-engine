@@ -1,17 +1,16 @@
 #include "scenes/geometry_scene.hpp"
 
+#include <GLFW/glfw3.h>
+
+#include <iostream>
+
 #include "color_shader.hpp"
 #include "primitives.hpp"
 
-#include <GLFW/glfw3.h>
-#include <iostream>
-
-GeometryScene::GeometryScene(Engine::Window *window, Engine::Camera &camera)
+GeometryScene::GeometryScene(Engine::Window* window, Engine::Camera& camera)
     : Engine::Scene(camera) {
-
   auto shader_result = Engine::ColorShader::create_color_shader(
-      shaderpath("frag_base_color.glsl").c_str(),
-      EngineTypes::Color{0.0f, 0.0f, 0.0f, 1.0f});
+      shaderpath("frag_base_color.glsl").c_str(), EngineTypes::Color{0.0f, 0.0f, 0.0f, 1.0f});
 
   if (!shader_result) {
     std::cout << shader_result.error() << '\n';
@@ -25,29 +24,23 @@ GeometryScene::GeometryScene(Engine::Window *window, Engine::Camera &camera)
   blue_material = std::make_unique<Engine::Material>(*color_shader);
   yellow_material = std::make_unique<Engine::Material>(*color_shader);
 
-  red_material->patch_uniform("color",
-                              EngineTypes::Color{255.0f, 40.0f, 40.0f, 255.0f});
+  red_material->patch_uniform("color", EngineTypes::Color{255.0f, 40.0f, 40.0f, 255.0f});
 
-  green_material->patch_uniform("color",
-                                EngineTypes::Color{40.0f, 255.0f, 80.0f, 255.0f});
+  green_material->patch_uniform("color", EngineTypes::Color{40.0f, 255.0f, 80.0f, 255.0f});
 
-  blue_material->patch_uniform("color",
-                               EngineTypes::Color{40.0f, 100.0f, 255.0f, 255.0f});
+  blue_material->patch_uniform("color", EngineTypes::Color{40.0f, 100.0f, 255.0f, 255.0f});
 
-  yellow_material->patch_uniform(
-      "color", EngineTypes::Color{255.0f, 210.0f, 40.0f, 255.0f});
+  yellow_material->patch_uniform("color", EngineTypes::Color{255.0f, 210.0f, 40.0f, 255.0f});
 
   // --------------------------------------------------
   // Meshes
   // --------------------------------------------------
 
-  triangle_mesh =
-      make_triangle(glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f},
-                    glm::vec3{0.0f, 0.5f, 0.0f});
+  triangle_mesh = make_triangle(glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f},
+                                glm::vec3{0.0f, 0.5f, 0.0f});
 
-  quad_mesh =
-      make_quad(glm::vec3{-0.5f, 0.5f, 0.0f}, glm::vec3{0.5f, 0.5f, 0.0f},
-                glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f});
+  quad_mesh = make_quad(glm::vec3{-0.5f, 0.5f, 0.0f}, glm::vec3{0.5f, 0.5f, 0.0f},
+                        glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f});
 
   triangle_left = Engine::RenderObject(&triangle_mesh, red_material.get());
   triangle_center = Engine::RenderObject(&triangle_mesh, green_material.get());

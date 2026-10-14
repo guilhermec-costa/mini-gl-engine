@@ -1,4 +1,5 @@
 #include "input.hpp"
+
 #include "GLFW/glfw3.h"
 
 namespace Engine {
@@ -15,15 +16,13 @@ void Input::process_key(int key, int action) {
 
 bool Input::key_down(int key) const {
   auto it = current.find(key);
-  if (it == current.end())
-    return false;
+  if (it == current.end()) return false;
   return it->second == GLFW_PRESS;
 }
 
 bool Input::key_pressed(int key) const {
   auto current_it = current.find(key);
-  if (current_it == current.end())
-    return false;
+  if (current_it == current.end()) return false;
 
   auto previous_it = previous.find(key);
   int prev = previous_it == previous.end() ? GLFW_RELEASE : previous_it->second;
@@ -33,7 +32,7 @@ bool Input::key_pressed(int key) const {
 
 bool Input::key_released(int key) const {
   auto current_it = current.find(key);
-  if(current_it == current.end()) return false;
+  if (current_it == current.end()) return false;
 
   auto previous_it = previous.find(key);
   int prev = previous_it == previous.end() ? GLFW_RELEASE : previous_it->second;
@@ -41,4 +40,4 @@ bool Input::key_released(int key) const {
   return prev == GLFW_PRESS && current_it->second == GLFW_RELEASE;
 }
 
-} // namespace Engine
+}  // namespace Engine

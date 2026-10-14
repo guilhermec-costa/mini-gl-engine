@@ -2,14 +2,18 @@
 
 #include <filesystem>
 
-std::filesystem::path albedopath(const char *path);
+#include "assimp/texture.h"
+
+std::filesystem::path texturepath(const char* path);
 
 namespace Engine {
 
 class Texture2D {
-public:
+ public:
   Texture2D() = default;
-  Texture2D(const char *path);
+  Texture2D(const char* path);
+  Texture2D(const unsigned char* buffer, int buffer_size);
+  Texture2D(const aiTexel* data, unsigned int width, unsigned int height);
   ~Texture2D();
 
   Texture2D(const Texture2D&) = delete;
@@ -19,14 +23,14 @@ public:
 
   void bind(unsigned short int index) const;
 
-private:
+ private:
   bool generate_mipmap = true;
   int repeat_x_mode, repeat_y_mode;
   unsigned int id;
 };
 
-}
+}  // namespace Engine
 
-inline Engine::Texture2D make_texture(const char *path) {
-  return Engine::Texture2D(albedopath(path).c_str());
+inline Engine::Texture2D make_texture(const char* path) {
+  return Engine::Texture2D(texturepath(path).c_str());
 }

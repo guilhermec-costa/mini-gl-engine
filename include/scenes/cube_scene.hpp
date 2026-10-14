@@ -6,11 +6,11 @@
 #include "window.hpp"
 
 class CubeScene : public Engine::Scene {
-public:
-  CubeScene(Engine::Window * window, Engine::Camera& camera);
+ public:
+  CubeScene(Engine::Window* window, Engine::Camera& camera);
   void update(float delta) override;
 
-private:
+ private:
   std::unique_ptr<Engine::Shader> color_shader;
   std::unique_ptr<Engine::Shader> texture_shader;
   Engine::Texture2D texture;

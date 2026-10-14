@@ -1,18 +1,19 @@
 #include "window.hpp"
-#include "GLFW/glfw3.h"
+
 #include <iostream>
+
+#include "GLFW/glfw3.h"
 
 namespace Engine {
 
-void resizeCallback(GLFWwindow *window, int width, int height) {
+void resizeCallback(GLFWwindow* window, int width, int height) {
   std::cout << "resizing window to w: " << width << " h: " << height << "\n";
   glViewport(0, 0, width, height);
 }
 
-Window::Window(uint16_t w, uint16_t h, const char *title)
-    : width(w), height(h) {
+Window::Window(uint16_t w, uint16_t h, const char* title) : width(w), height(h) {
   _window = glfwCreateWindow(w, h, title, NULL, NULL);
-  if(!_window) {
+  if (!_window) {
     std::cout << "failed to create glfw window" << std::endl;
   } else {
     glfwSetFramebufferSizeCallback(_window, resizeCallback);
@@ -37,4 +38,4 @@ void Window::clear() const {
   glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-} // namespace Engine
+}  // namespace Engine

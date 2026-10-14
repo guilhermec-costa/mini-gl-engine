@@ -1,4 +1,5 @@
 #include "scenes/solar_system.hpp"
+
 #include "macros.hpp"
 #include "material.hpp"
 #include "primitives.hpp"
@@ -7,7 +8,7 @@
 
 using namespace Engine;
 
-SolarSystem::SolarSystem(Window *window, Camera &camera) : Scene(camera) {
+SolarSystem::SolarSystem(Window* window, Camera& camera) : Scene(camera) {
   base_shader = SHADERS.get(ShaderId::Base);
   sun_material = std::make_unique<Engine::Material>(*base_shader);
   sun_mesh = make_sphere(1, 72, 36);
@@ -15,7 +16,7 @@ SolarSystem::SolarSystem(Window *window, Camera &camera) : Scene(camera) {
   sun.transform.set_position({-0.1f, 0.45f, -1.f});
   sun.transform.set_scale({1.f, 1.f, 1.f});
 
-  auto* sun_texture = TEXTURES.get(TextureId::Sun);
+  auto* sun_texture = TEXTURES.get(texturepath("sun.jpg"));
   sun.material->set_diffuse_map(sun_texture);
   sun_material->set_diffuse_map(sun_texture);
   sun_material->set_emission_map(sun_texture);
@@ -30,5 +31,4 @@ SolarSystem::SolarSystem(Window *window, Camera &camera) : Scene(camera) {
   objects.push_back(&sun);
 };
 
-void SolarSystem::update(float delta) {
-}
+void SolarSystem::update(float delta) {}

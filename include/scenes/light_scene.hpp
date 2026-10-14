@@ -7,11 +7,11 @@
 #include "window.hpp"
 
 class LightScene : public Engine::Scene {
-public:
-  LightScene(Engine::Window * window, Engine::Camera& camera);
+ public:
+  LightScene(Engine::Window* window, Engine::Camera& camera);
   void update(float delta) override;
 
-private:
+ private:
   std::unique_ptr<Engine::Shader> lamp_shader;
   std::unique_ptr<Engine::Shader> box_shader;
   Engine::Texture2D wood_texture;

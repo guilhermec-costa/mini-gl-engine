@@ -1,6 +1,9 @@
-#include <vendor/glad/glad.h>
-#include <iostream>
 #include "renderer.hpp"
+
+#include <vendor/glad/glad.h>
+
+#include <iostream>
+
 #include "material.hpp"
 
 namespace Engine {
@@ -12,10 +15,9 @@ Renderer::Renderer() {
 }
 
 void Renderer::draw(const RenderObject& object, const Camera& camera) {
-  Material* material = object.mesh->material ? 
-    object.mesh->material : object.material;
+  Material* material = object.mesh->material ? object.mesh->material : object.material;
 
-  if(material) {
+  if (material) {
     material->shader.patch_uniform("model", object.transform.matrix());
     material->shader.patch_uniform("view", camera.view_matrix());
     material->shader.patch_uniform("projection", camera.projection_matrix());
@@ -23,7 +25,7 @@ void Renderer::draw(const RenderObject& object, const Camera& camera) {
   }
 
   glBindVertexArray(object.mesh->get_VAO());
-  if(object.mesh->get_index_count() > 0) {
+  if (object.mesh->get_index_count() > 0) {
     glDrawElements(GL_TRIANGLES, object.mesh->get_index_count(), GL_UNSIGNED_INT, nullptr);
     triangle_count += object.mesh->get_index_count() / 3;
   } else {
@@ -37,11 +39,11 @@ void Renderer::draw(const RenderObject& object, const Camera& camera) {
     std::cout << "failed to render, code: " << error << "\n";
   }
 }
- 
+
 void Renderer::render_scene(Scene& scene) {
-  for(RenderObject* o : scene.objects) {
+  for (RenderObject* o : scene.objects) {
     draw(*o, scene.camera);
-  } 
+  }
 }
 
 void Renderer::reset_stats() {
@@ -49,13 +51,9 @@ void Renderer::reset_stats() {
   draw_call_count = 0;
 }
 
-int Renderer::get_triangle() const {
-  return triangle_count;
-}
+int Renderer::get_triangle() const { return triangle_count; }
 
-int Renderer::get_draw_call_count() const {
-  return draw_call_count;
-}
+int Renderer::get_draw_call_count() const { return draw_call_count; }
 
 RenderMetadata Renderer::get_metadata() const {
   const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -63,4 +61,4 @@ RenderMetadata Renderer::get_metadata() const {
   const GLubyte* version = glGetString(GL_VERSION);
   return RenderMetadata{renderer, vendor, version};
 }
-}
+}  // namespace Engine

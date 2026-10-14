@@ -1,20 +1,22 @@
 #include "engine.hpp"
+
+#include <chrono>
+#include <iostream>
+#include <thread>
+
 #include "GLFW/glfw3.h"
 #include "camera.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "input.hpp"
+#include "meshes/cube_test.hpp"
 #include "renderer.hpp"
 #include "scene.hpp"
 #include "scenes/cube_scene.hpp"
-#include "meshes/cube_test.hpp"
 #include "scenes/light_scene.hpp"
 #include "scenes/model_playground.hpp"
 #include "scenes/solar_system.hpp"
-#include <chrono>
-#include <iostream>
-#include <thread>
 
 namespace Engine {
 
@@ -22,37 +24,32 @@ inline void sleep(double seconds) {
   std::this_thread::sleep_for(std::chrono::duration<double>(seconds));
 }
 
-Controller::Controller(Window *window, Renderer* renderer, Input* input_handler) 
-  : _window(window), _renderer(renderer), _input(input_handler) {};
+Controller::Controller(Window* window, Renderer* renderer, Input* input_handler)
+    : _window(window), _renderer(renderer), _input(input_handler) {};
 
-bool Controller::should_stop() const {
-  return glfwWindowShouldClose(_window->unwrap());
-};
+bool Controller::should_stop() const { return glfwWindowShouldClose(_window->unwrap()); };
 
 void Controller::process_input(float delta_time) {
-  if(_input->key_pressed(GLFW_KEY_F11)) {
+  if (_input->key_pressed(GLFW_KEY_F11)) {
     _window->close();
   }
-  if(_input->key_pressed(GLFW_KEY_ESCAPE)) {
+  if (_input->key_pressed(GLFW_KEY_ESCAPE)) {
     toggle_cursor_captured();
-    glfwSetInputMode(
-      _window->unwrap(), 
-      GLFW_CURSOR, 
-      cursor_captured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
-    );
+    glfwSetInputMode(_window->unwrap(), GLFW_CURSOR,
+                     cursor_captured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
   }
 
   main_camera.process_input(delta_time);
 
-  if(_input->key_pressed(GLFW_KEY_TAB)) {
+  if (_input->key_pressed(GLFW_KEY_TAB)) {
     polygon_mode = polygon_mode == GL_FILL ? GL_LINE : GL_FILL;
-    glPolygonMode(GL_FRONT_AND_BACK,  polygon_mode);
+    glPolygonMode(GL_FRONT_AND_BACK, polygon_mode);
   }
 }
 
 void Controller::process_mouse_input(GLFWwindow* window, double xpos, double ypos) {
   Controller* controller = static_cast<Controller*>(glfwGetWindowUserPointer(window));
-  if(controller->cursor_captured) {
+  if (controller->cursor_captured) {
     controller->main_camera.update_direction(xpos, ypos);
   } else {
     controller->main_camera.record_mouse_pos(xpos, ypos);
@@ -64,14 +61,12 @@ void Controller::process_mouse_wheel(GLFWwindow* window, double xoffset, double 
   controller->main_camera.update_zoom(xoffset, yoffset);
 }
 
-void Controller::toggle_cursor_captured() {
-  cursor_captured = !cursor_captured;
-}
+void Controller::toggle_cursor_captured() { cursor_captured = !cursor_captured; }
 
 void Controller::render() {
   _renderer->reset_stats();
   _window->clear();
-  for(Scene* scene : scenes) {
+  for (Scene* scene : scenes) {
     _renderer->render_scene(*scene);
   }
 }
@@ -82,13 +77,7 @@ void Controller::update(float delta) {
   }
 }
 
-void Controller::key_callback(
-    GLFWwindow* window,
-    int key,
-    int scancode,
-    int action,
-    int mods
-) {
+void Controller::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   auto* controller = static_cast<Controller*>(glfwGetWindowUserPointer(window));
   controller->_input->process_key(key, action);
 }
@@ -99,22 +88,14 @@ void Controller::loop() {
   glfwSetCursorPosCallback(_window->unwrap(), Controller::process_mouse_input);
   glfwSetScrollCallback(_window->unwrap(), Controller::process_mouse_wheel);
   glfwSetKeyCallback(_window->unwrap(), Controller::key_callback);
-  
-  main_camera = Engine::Camera(
-    _input,
-    glm::vec3(0.0f, 0.0f, 3.0f), 
-    glm::vec3(0.0f, 0.0f, 0.0f), 
-    glm::vec3(0.0f, 1.0f, 0.0f),
-    _window->width/2.0f,
-    _window->height/2.0f,
-    45.f,
-    _window->aspect_ratio(),
-    0.1f, 100.f
-  );
 
-  //auto light_scene = LightScene(_window, main_camera);
-  //scenes.push_back(&light_scene);
-  // auto solar_system = SolarSystem(_window, main_camera);
+  main_camera = Engine::Camera(_input, glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+                               glm::vec3(0.0f, 1.0f, 0.0f), _window->width / 2.0f,
+                               _window->height / 2.0f, 45.f, _window->aspect_ratio(), 0.1f, 100.f);
+
+  // auto light_scene = LightScene(_window, main_camera);
+  // scenes.push_back(&light_scene);
+  //  auto solar_system = SolarSystem(_window, main_camera);
   auto model_playground = ModelPlayground(_window, main_camera);
   scenes.push_back(&model_playground);
 
@@ -142,7 +123,6 @@ void Controller::loop() {
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     ImGui::End();
 
-
     const float current_fps = 1.0 / delta_time;
 
     process_input(delta_time);
@@ -154,11 +134,11 @@ void Controller::loop() {
 
     glfwSwapBuffers(_window->unwrap());
     _input->update();
-    
+
     double frame_elapsed = glfwGetTime() - frame_start;
-    if(frame_elapsed < TARGET_DELTA_TIME) {
+    if (frame_elapsed < TARGET_DELTA_TIME) {
       sleep(TARGET_DELTA_TIME - frame_elapsed);
     }
   }
 }
-} // namespace Engine
+}  // namespace Engine

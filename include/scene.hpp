@@ -6,14 +6,13 @@
 namespace Engine {
 
 class Scene {
-public:
-  Scene(Camera& camera)
-    : camera(camera) {};
+ public:
+  Scene(Camera& camera) : camera(camera) {};
   virtual ~Scene() = default;
   virtual void update(float delta) = 0;
 
-public:
+ public:
   Camera& camera;
   std::vector<RenderObject*> objects;
 };
-}
+}  // namespace Engine

@@ -4,11 +4,11 @@
 #include "window.hpp"
 
 class ModelPlayground : public Engine::Scene {
-public:
+ public:
   ModelPlayground(Engine::Window* window, Engine::Camera& camera);
   void update(float delta) override;
 
-private:
+ private:
   Engine::Model backpack;
   Engine::Model door;
 };

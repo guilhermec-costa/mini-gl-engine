@@ -1,7 +1,10 @@
-#include <vendor/glad/glad.h>
 #include "color_shader.hpp"
-#include "shader.hpp"
+
+#include <vendor/glad/glad.h>
+
 #include <fstream>
+
+#include "shader.hpp"
 
 namespace Engine {
 
@@ -11,16 +14,13 @@ ColorShader::ColorShader(unsigned int program_id)
 ColorShader::ColorShader(unsigned int program_id, EngineTypes::Color color)
     : Shader(program_id), color(color) {};
 
-std::expected<ColorShader, std::string>
-ColorShader::create_color_shader(const char *frag_path,
-                                 std::optional<EngineTypes::Color> color) {
-
+std::expected<ColorShader, std::string> ColorShader::create_color_shader(
+    const char* frag_path, std::optional<EngineTypes::Color> color) {
   std::filesystem::path vp = shaderpath("vertex.glsl");
-  const char *vertex_path = vp.c_str();
+  const char* vertex_path = vp.c_str();
 
   std::ifstream vertexstream(vertex_path), fragstream(frag_path);
-  if (!vertexstream.is_open())
-    return std::unexpected("failed to open default vertex shader file");
+  if (!vertexstream.is_open()) return std::unexpected("failed to open default vertex shader file");
   if (!fragstream.is_open())
     return std::unexpected("failed to open base fragment color shader file");
 
@@ -31,8 +31,8 @@ ColorShader::create_color_shader(const char *frag_path,
   std::string vertexsrc = vertexss.str();
   std::string fragsrc = fragss.str();
 
-  const char *vertex_code = vertexsrc.c_str();
-  const char *frag_code = fragsrc.c_str();
+  const char* vertex_code = vertexsrc.c_str();
+  const char* frag_code = fragsrc.c_str();
 
   unsigned int vertex_shader, fragment_shader;
   vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -69,12 +69,11 @@ ColorShader::create_color_shader(const char *frag_path,
   glDeleteShader(vertex_shader);
   glDeleteShader(fragment_shader);
 
-  if (color.has_value())
-    return ColorShader(ID, color.value());
+  if (color.has_value()) return ColorShader(ID, color.value());
   return ColorShader(ID);
 }
 
 void ColorShader::set_color(const EngineTypes::Color c) { color = c; }
 
 void ColorShader::bind() const { glUseProgram(_program_id); }
-} // namespace Engine
+}  // namespace Engine

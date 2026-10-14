@@ -7,11 +7,11 @@
 #include "window.hpp"
 
 class GeometryScene : public Engine::Scene {
-public:
-  GeometryScene(Engine::Window *window, Engine::Camera &camera);
+ public:
+  GeometryScene(Engine::Window* window, Engine::Camera& camera);
   void update(float delta) override;
 
-private:
+ private:
   std::unique_ptr<Engine::Shader> color_shader;
 
   std::unique_ptr<Engine::Material> red_material;

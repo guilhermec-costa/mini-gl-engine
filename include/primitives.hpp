@@ -7,7 +7,7 @@
 namespace Engine {
 
 class Transform {
-public:
+ public:
   Transform() = default;
   void set_position(const glm::vec3& pos);
   void move(const glm::vec3& offset);
@@ -17,7 +17,7 @@ public:
   void scale(const glm::vec3& factor);
   glm::mat4 matrix() const;
 
-public:
+ public:
   glm::vec3 position{0.0f};
   glm::vec3 scale_factor{1.0f};
   glm::vec3 rotation_axis{0.0f, 0.0f, 1.0f};
@@ -25,7 +25,7 @@ public:
   float rotation_angle{0.0f};
 };
 
-} // namespace Engine
+}  // namespace Engine
 
 Engine::Mesh make_quad(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 v4);
 Engine::Mesh make_triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);

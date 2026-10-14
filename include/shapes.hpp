@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Engine {
-  class Triangle {
-    ~Triangle();
-  };
-}
+class Triangle {
+  ~Triangle();
+};
+}  // namespace Engine

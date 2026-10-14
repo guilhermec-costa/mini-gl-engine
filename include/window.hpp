@@ -1,34 +1,33 @@
 #pragma once
 
-#include "GLFW/glfw3.h"
 #include <cstdint>
+
+#include "GLFW/glfw3.h"
 #include "types.hpp"
 
 namespace Engine {
 
 class Window {
-public:
+ public:
   uint16_t width, height;
   EngineTypes::Color clear_color = {0.0f, 0.0f, 0.0f, 1.0f};
 
-public:
-  Window(uint16_t w, uint16_t h, const char *title);
-  Window(const Window &) = delete;
+ public:
+  Window(uint16_t w, uint16_t h, const char* title);
+  Window(const Window&) = delete;
   Window& operator=(Window& other) = delete;
   ~Window();
 
   inline bool created() const { return _window != NULL; }
-  inline GLFWwindow *unwrap() const { return _window; };
+  inline GLFWwindow* unwrap() const { return _window; };
 
   float aspect_ratio() const;
   void clear() const;
   void close();
 
-  inline void set_clear_color(const EngineTypes::Color color) {
-    clear_color = color;
-  }
+  inline void set_clear_color(const EngineTypes::Color color) { clear_color = color; }
 
-private:
-  GLFWwindow *_window;
+ private:
+  GLFWwindow* _window;
 };
-} // namespace Engine
+}  // namespace Engine

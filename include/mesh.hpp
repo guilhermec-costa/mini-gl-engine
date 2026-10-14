@@ -1,7 +1,8 @@
 #pragma once
 
-#include <cstddef>
 #include <sys/types.h>
+
+#include <cstddef>
 #include <vector>
 
 namespace Engine {
@@ -9,24 +10,22 @@ namespace Engine {
 class Material;
 
 class VertexAttribute {
-public:
+ public:
   VertexAttribute() = delete;
   VertexAttribute(unsigned int location, unsigned int components, size_t offset)
       : location(location), components(components), offset(offset) {};
 
-public:
+ public:
   unsigned int location;
   unsigned int components;
   size_t offset;
 };
 
 class Mesh {
-public:
+ public:
   Mesh() = default;
-  Mesh(const std::vector<float>& rawData,
-       const std::vector<unsigned int>& indices,
-       const std::vector<VertexAttribute> &attributes, 
-       size_t vertex_count, size_t stride);
+  Mesh(const std::vector<float>& rawData, const std::vector<unsigned int>& indices,
+       const std::vector<VertexAttribute>& attributes, size_t vertex_count, size_t stride);
   ~Mesh();
 
   Mesh(const Mesh&) = delete;
@@ -39,13 +38,13 @@ public:
   size_t get_vertex_count() const;
   size_t get_index_count() const;
 
-public:
+ public:
   Material* material;
 
-private:
+ private:
   uint _VAO, _VBO, _EBO;
   size_t vertex_count;
   size_t index_count;
 };
 
-} // namespace Engine
+}  // namespace Engine

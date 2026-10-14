@@ -1,37 +1,27 @@
 #pragma once
 
-#include "texture2d.hpp"
 #include <memory>
 #include <unordered_map>
 
-enum class TextureId {
-  StoneWall,
-  MedievalBoxDiffuse,
-  MedievalBoxSpecular,
-  WoodFace,
-  Matrix,
-  Earth,
-  Sun
-};
+#include "assimp/texture.h"
+#include "texture2d.hpp"
 
 namespace Engine {
 
 class TextureStorage {
-public:
+ public:
   static TextureStorage& instance();
-  Texture2D &load(const TextureId, const std::string &path);
-  Texture2D &load(const std::string& path);
-  Texture2D* get(const TextureId) const;
+  Texture2D& load(const std::string& path);
+  Texture2D& load(const std::string& key, const aiTexture* embedded);
   Texture2D* get(const std::string& path) const;
 
-private:
+ private:
   TextureStorage() = default;
   TextureStorage(const TextureStorage&) = delete;
   TextureStorage& operator=(const TextureStorage&) = delete;
 
-private:
-  std::unordered_map<TextureId, std::unique_ptr<Texture2D>> textures;
-  std::unordered_map<std::string, std::unique_ptr<Texture2D>> imported_textures;
+ private:
+  std::unordered_map<std::string, std::unique_ptr<Texture2D>> textures;
 };
 
-} // namespace Engine
+}  // namespace Engine

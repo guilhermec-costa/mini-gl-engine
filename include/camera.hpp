@@ -6,13 +6,13 @@
 namespace Engine {
 
 class Camera {
-public:
+ public:
   Camera() = default;
-  Camera(Input* input_handler, glm::vec3 position, glm::vec3 target, glm::vec3 up, float initial_x, float initial_y, float fov,
-         float aspect_ratio, float near_plane, float far_plane);
+  Camera(Input* input_handler, glm::vec3 position, glm::vec3 target, glm::vec3 up, float initial_x,
+         float initial_y, float fov, float aspect_ratio, float near_plane, float far_plane);
 
   glm::mat4 view_matrix() const;
-  glm::mat4 projection_matrix() const; 
+  glm::mat4 projection_matrix() const;
 
   void process_input(float delta);
   void update_direction(double xpos, double ypos);
@@ -27,7 +27,7 @@ public:
   void speed_up();
   void reset_speed();
 
-public:
+ public:
   glm::vec3 position;
   glm::vec3 front;
   glm::vec3 up;
@@ -40,14 +40,13 @@ public:
   float initial_speed = 1.0f;
   float sensitivity = 0.01f;
 
-
   bool first_mouse = true;
   bool sprinting = false;
   float yaw = -90.0f, pitch = 0.0f;
   float last_x = 0.0f, last_y = 0.0f;
 
-private:
-    Input* _input;
-    float speed_up_factor = 3.0f;
+ private:
+  Input* _input;
+  float speed_up_factor = 3.0f;
 };
-} // namespace Engine
+}  // namespace Engine

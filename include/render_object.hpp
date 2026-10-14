@@ -8,16 +8,15 @@ namespace Engine {
 class Material;
 
 class RenderObject {
-public:
+ public:
   RenderObject() = default;
-  RenderObject(Mesh* mesh, Material* material)
-    : mesh(mesh), material(material) {};
-  explicit RenderObject(Mesh* mesh): mesh(mesh) {};
+  RenderObject(Mesh* mesh, Material* material) : mesh(mesh), material(material) {};
+  explicit RenderObject(Mesh* mesh) : mesh(mesh) {};
 
-public:
+ public:
   Engine::Mesh* mesh = nullptr;
   Engine::Material* material = nullptr;
-  Engine::Transform transform; 
+  Engine::Transform transform;
 };
 
-}
+}  // namespace Engine
